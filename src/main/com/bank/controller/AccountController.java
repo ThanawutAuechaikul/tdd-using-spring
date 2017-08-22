@@ -1,6 +1,7 @@
 package com.bank.controller;
 
 import com.bank.domain.Account;
+import com.bank.model.AccountSummary;
 import com.bank.repository.AccountRepository;
 import com.bank.repository.internal.JdbcAccountRepository;
 import com.bank.repository.internal.SimpleAccountRepository;
@@ -22,6 +23,12 @@ public class AccountController {
     public @ResponseBody List<Account> getAccountListByUserId(@RequestParam String userId) {
         AccountRepository accountRep = new JdbcAccountRepository(dataSource);
         return accountRep.findAllAccountsByUserId(userId);
+    }
+
+    @RequestMapping(value = "accountSummary/accountId/{accountId}", method = {RequestMethod.GET}, produces = "application/json")
+    public @ResponseBody AccountSummary getAccountSummary(@PathVariable String accountId) {
+        AccountRepository accountRep = new JdbcAccountRepository(dataSource);
+        return accountRep.getAccountSummaryByAccountId(accountId);
     }
 
 }

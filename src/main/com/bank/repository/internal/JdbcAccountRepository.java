@@ -15,6 +15,7 @@
  */
 package com.bank.repository.internal;
 
+import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
+import com.bank.model.AccountSummary;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -40,13 +42,13 @@ public class JdbcAccountRepository implements AccountRepository {
 
     @Override
     public void updateBalance(Account dstAcct) {
-        jdbcTemplate.update("update account set balance = ? where id = ?", dstAcct.getBalance(), dstAcct.getId());
+        jdbcTemplate.update("update ACCOUNT set balance = ? where id = ?", dstAcct.getBalance(), dstAcct.getId());
     }
 
     @Override
     public Account findById(String srcAcctId) {
         Account result = jdbcTemplate.queryForObject(
-                "SELECT * FROM Account where ID = ?",
+                "SELECT * FROM ACCOUNT where ID = ?",
                 (rs, rowNum) -> new Account(rs.getString("ID"), rs.getString("ACCOUNT_NUMBER"),
                         rs.getString("NAME"), rs.getDouble("BALANCE"))
                 , srcAcctId);
@@ -65,6 +67,13 @@ public class JdbcAccountRepository implements AccountRepository {
 
         return result;
 
+    }
+
+    @Override
+    public AccountSummary getAccountSummaryByAccountId(String accountId) {
+        Account account = this.findById(accountId);
+
+        return new AccountSummary(account.getAccountNumber(), new BigDecimal(account.getBalance()));
     }
 
 

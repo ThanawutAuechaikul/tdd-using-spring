@@ -26,6 +26,8 @@ public interface AccountRepository {
 
     void updateBalance(Account dstAcct);
 
+    Account findByAccountNumber(String srcAcctNo);
+
     List<Account> findAllAccountsByUserId(String userId);
 
     AccountSummary getAccountSummaryByAccountId(String accountId);

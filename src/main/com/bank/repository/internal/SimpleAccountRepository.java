@@ -64,6 +64,11 @@ public class SimpleAccountRepository implements AccountRepository {
     }
 
     @Override
+    public Account findByAccountNumber(String srcAcctNo) {
+        return null;
+    }
+
+    @Override
     public List<Account> findAllAccountsByUserId(String userId) {
         if (userId.equals(Data.U123_UID)) {
             ArrayList<Account> accounts = new ArrayList<>();

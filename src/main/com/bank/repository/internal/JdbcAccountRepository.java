@@ -58,6 +58,18 @@ public class JdbcAccountRepository implements AccountRepository {
     }
 
     @Override
+    public Account findByAccountNumber(String srcAcctNo) {
+        Account result = jdbcTemplate.queryForObject(
+                "SELECT * FROM Account where ACCOUNT_NUMBER = ?",
+                (rs, rowNum) -> new Account(rs.getString("ID"), rs.getString("ACCOUNT_NUMBER"),
+                        rs.getString("NAME"), rs.getDouble("BALANCE"))
+                , srcAcctNo);
+
+        return result;
+
+    }
+
+    @Override
     public List<Account> findAllAccountsByUserId(String userId) {
         List<Account> result = jdbcTemplate.query(
                 "SELECT * FROM ACCOUNT where USER_ID = ?",

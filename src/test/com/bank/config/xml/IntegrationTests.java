@@ -18,7 +18,13 @@ package com.bank.config.xml;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
+import com.bank.domain.DefaultTransferWindow;
+import com.bank.domain.LocalTimeWrapper;
+import com.bank.repository.internal.SimpleAccountRepository;
+import com.bank.service.FeePolicy;
+import com.bank.service.internal.DefaultTransferService;
 import com.bank.service.internal.InvalidTransferWindow;
+import com.bank.service.internal.ZeroFeePolicy;
 import org.junit.Test;
 import org.springframework.context.support.GenericXmlApplicationContext;
 
@@ -30,13 +36,13 @@ public class IntegrationTests {
 
     @Test
     public void transferTenDollars() throws InsufficientFundsException, InvalidTransferWindow {
-        GenericXmlApplicationContext ctx = new GenericXmlApplicationContext();
-        ctx.getEnvironment().setActiveProfiles("dev");
-        ctx.load("classpath:/com/bank/config/xml/transfer-service-config.xml");
-        ctx.refresh();
+        AccountRepository accountRepository = new SimpleAccountRepository();
+        FeePolicy feePolicy = new ZeroFeePolicy();
+        LocalTimeWrapper localTimeWrapper = new LocalTimeWrapper();
+        DefaultTransferWindow defaultTransferWindow = new DefaultTransferWindow("06:00:00", "22:00:00");
 
-        TransferService transferService = ctx.getBean(TransferService.class);
-        AccountRepository accountRepository = ctx.getBean(AccountRepository.class);
+
+        TransferService transferService = new DefaultTransferService(accountRepository, feePolicy, localTimeWrapper, defaultTransferWindow);
 
         assertThat(accountRepository.findById("A123").getBalance(), equalTo(100.00));
         assertThat(accountRepository.findById("C456").getBalance(), equalTo(0.00));
@@ -45,5 +51,6 @@ public class IntegrationTests {
 
         assertThat(accountRepository.findById("A123").getBalance(), equalTo(90.00));
         assertThat(accountRepository.findById("C456").getBalance(), equalTo(10.00));
+
     }
 }

@@ -1,19 +1,15 @@
-package com.bank.service.internal;
+package com.bank.controller;
 
-import com.bank.domain.InvalidDepositAmountException;
+import com.bank.domain.Account;
 import com.bank.model.AccountSummary;
 import com.bank.repository.AccountRepository;
 import com.bank.repository.internal.SimpleAccountRepository;
-import com.bank.service.DepositService;
-import com.bank.service.FeePolicy;
 import org.junit.Before;
 import org.junit.Test;
-import com.bank.domain.Account;
 
 import java.math.BigDecimal;
 import java.util.List;
 
-import static com.bank.repository.internal.SimpleAccountRepository.Data.*;
 import static com.bank.repository.internal.SimpleAccountRepository.Data.U123_UID;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertEquals;

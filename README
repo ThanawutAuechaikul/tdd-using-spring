@@ -1,13 +1,16 @@
+This repository is cloned from git@github.com:roofimon/tdd-using-spring.git
 
-For those familiar with Git:
+Use the following command to build the project with Maven
 
-    git clone git@github.com:roofimon/tdd-using-spring.git
+> mvn package
 
+------------------------------------------------------------------------------
+Below is the README for the original project setup:
 
 Once checked out, you can build from the command line using either Gradle or
 Maven.  If you're new to Gradle, don't worry -- there's nothing for you to
 install.  Simply use the 'gradlew' (or 'gradlew.bat' on windows) script within
-the root directory of the project: 
+the root directory of the project:
 
     >$ ./gradlew build
 

@@ -17,9 +17,13 @@ package com.bank.repository;
 
 import com.bank.domain.Account;
 
+import java.util.List;
+
 public interface AccountRepository {
 
     Account findById(String srcAcctId);
 
     void updateBalance(Account dstAcct);
+
+    List<Account> findAllAccountsByUserId(String userId);
 }

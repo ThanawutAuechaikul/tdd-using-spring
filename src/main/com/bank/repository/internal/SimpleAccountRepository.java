@@ -15,7 +15,9 @@
  */
 package com.bank.repository.internal;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.bank.domain.Account;
@@ -27,6 +29,7 @@ public class SimpleAccountRepository implements AccountRepository {
     public static class Data {
 
         public static final String A123_ID = "A123";
+        public static final String U123_UID = "U123";
         public static final String C456_ID = "C456";
         public static final String Z999_ID = "Z999"; // NON EXISTENT ID
         public static final double A123_INITIAL_BAL = 100.00;
@@ -52,6 +55,19 @@ public class SimpleAccountRepository implements AccountRepository {
         actualAccount.setBalance(account.getBalance());
     }
 
+    @Override
+    public List<Account> findAllAccountsByUserId(String userId) {
+        if (userId.equals(Data.U123_UID)) {
+            ArrayList<Account> accounts = new ArrayList<>();
+            accounts.add(new Account(Data.A123_ID, Data.A123_INITIAL_BAL));
+            accounts.add(new Account(Data.C456_ID, Data.C456_INITIAL_BAL));
+            return accounts;
+        }
+        else {
+            return new ArrayList<>();
+        }
+    }
+
     private Account nullSafeAccountLookup(String acctId) {
         Account account = accountsById.get(acctId);
         if (account == null) {
@@ -59,4 +75,5 @@ public class SimpleAccountRepository implements AccountRepository {
         }
         return account;
     }
+
 }

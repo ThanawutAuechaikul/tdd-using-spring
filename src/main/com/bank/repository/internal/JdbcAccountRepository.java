@@ -17,6 +17,8 @@ package com.bank.repository.internal;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.sql.DataSource;
 
@@ -49,5 +51,10 @@ public class JdbcAccountRepository implements AccountRepository {
         public Account mapRow(ResultSet rs, int rowNum) throws SQLException {
             return new Account(rs.getString("id"), rs.getDouble("balance"));
         }
+    }
+
+    @Override
+    public List<Account> findAllAccountsByUserId(String userId) {
+        return new ArrayList<>();
     }
 }

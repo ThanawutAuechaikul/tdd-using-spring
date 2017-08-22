@@ -22,6 +22,7 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
@@ -30,6 +31,7 @@ import com.bank.repository.AccountRepository;
 
 public class JdbcAccountRepository implements AccountRepository {
 
+    @Autowired
     private final JdbcTemplate jdbcTemplate;
 
     public JdbcAccountRepository(DataSource dataSource) {
@@ -37,24 +39,33 @@ public class JdbcAccountRepository implements AccountRepository {
     }
 
     @Override
-    public Account findById(String srcAcctId) {
-        return jdbcTemplate.queryForObject("select id, balance from account where id = ?", new AccountRowMapper(), srcAcctId);
-    }
-
-    @Override
     public void updateBalance(Account dstAcct) {
         jdbcTemplate.update("update account set balance = ? where id = ?", dstAcct.getBalance(), dstAcct.getId());
     }
 
-    private static class AccountRowMapper implements RowMapper<Account> {
-        @Override
-        public Account mapRow(ResultSet rs, int rowNum) throws SQLException {
-            return new Account(rs.getString("id"), rs.getDouble("balance"));
-        }
+    @Override
+    public Account findById(String srcAcctId) {
+        Account result = jdbcTemplate.queryForObject(
+                "SELECT * FROM Account where ID = ?",
+                (rs, rowNum) -> new Account(rs.getString("ID"), rs.getString("ACCOUNT_NUMBER"),
+                        rs.getString("NAME"), rs.getDouble("BALANCE"))
+                , srcAcctId);
+
+        return result;
+
     }
 
     @Override
     public List<Account> findAllAccountsByUserId(String userId) {
-        return new ArrayList<>();
+        List<Account> result = jdbcTemplate.query(
+                "SELECT * FROM ACCOUNT where USER_ID = ?",
+                (rs, rowNum) -> new Account(rs.getString("ID"),  rs.getString("ACCOUNT_NUMBER"),
+                        rs.getString("NAME"), rs.getDouble("BALANCE"))
+        , userId);
+
+        return result;
+
     }
+
+
 }

@@ -8,7 +8,7 @@ public class TransferController {
 
     @RequestMapping("/")
     public String index() {
-        return "Greetings from Spring Jenkins!";
+        return "Greetings from Spring Jenkins_2!";
     }
 
 }

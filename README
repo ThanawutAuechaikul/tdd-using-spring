@@ -7,7 +7,7 @@ For those familiar with Git:
 Once checked out, you can build from the command line using either Gradle or
 Maven.  If you're new to Gradle, don't worry -- there's nothing for you to
 install.  Simply use the 'gradlew' (or 'gradlew.bat' on windows) script within
-the root directory of the project:
+the root directory of the project: 
 
     >$ ./gradlew build
 

@@ -15,12 +15,14 @@
  */
 package com.bank.repository.internal;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.bank.domain.Account;
+import com.bank.model.AccountSummary;
 import com.bank.repository.AccountNotFoundException;
 import com.bank.repository.AccountRepository;
 
@@ -72,6 +74,13 @@ public class SimpleAccountRepository implements AccountRepository {
         else {
             return new ArrayList<>();
         }
+    }
+
+    @Override
+    public AccountSummary getAccountSummaryByAccountId(String accountId) {
+        Account account = this.findById(accountId);
+
+        return new AccountSummary(account.getAccountNumber(), new BigDecimal(account.getBalance()));
     }
 
     private Account nullSafeAccountLookup(String acctId) {

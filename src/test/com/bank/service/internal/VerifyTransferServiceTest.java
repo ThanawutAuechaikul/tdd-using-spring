@@ -2,6 +2,7 @@ package com.bank.service.internal;
 
 import com.bank.domain.Account;
 import com.bank.domain.InsufficientFundsException;
+import com.bank.domain.TransferReceipt;
 import com.bank.repository.internal.JdbcAccountRepository;
 import org.junit.Before;
 import org.junit.Test;
@@ -9,16 +10,10 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.sql.DataSource;
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.anyString;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
 
 @RunWith(MockitoJUnitRunner.class)
 public class VerifyTransferServiceTest {
@@ -39,6 +34,8 @@ public class VerifyTransferServiceTest {
 
         doReturn(accountA).when(accountRepo).findByAccountNumber("1234567890");
         doReturn(accountB).when(accountRepo).findByAccountNumber("1234567800");
+        doReturn(null).when(accountRepo).findByAccountNumber("1234567899");
+        doReturn(null).when(accountRepo).findByAccountNumber("1234567811");
     }
 
     @Test
@@ -46,11 +43,13 @@ public class VerifyTransferServiceTest {
         double amountABefore = accountA.getBalance();
         double amountBBefore = accountB.getBalance();
         double amount = 20.00;
+        String remark = "Transfer 20B from A to B.";
 
-        transferService.transfer(amount, "1234567890", "1234567800", "Transfer 20B from A to B.");
+        TransferReceipt receipt = transferService.transfer(amount, "1234567890", "1234567800", remark);
 
         assertTrue(amount == amountABefore - accountA.getBalance());
         assertTrue(amount == accountB.getBalance() - amountBBefore);
+        assertEquals(remark, receipt.getSrcRemark());
     }
 
     @Test(expected = InvalidTransferWindow.class)

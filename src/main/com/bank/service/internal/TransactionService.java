@@ -25,6 +25,6 @@ public class TransactionService {
 
         transactionRepository.insertTransaction(eventId, transactionDateTime, fromAccountId, TransactionType.TRANSFER, amount, balanceFrom, remarkFrom);
         transactionRepository.insertTransaction(eventId, transactionDateTime, toAccountId, TransactionType.DEPOSIT, amount, balanceTo, "");
-        transactionRepository.insertTransaction(eventId, transactionDateTime, toAccountId, TransactionType.WITHDRAW, amount, balanceTo, "Transfer Fee");
+        transactionRepository.insertTransaction(eventId, transactionDateTime, fromAccountId, TransactionType.WITHDRAW, amount, balanceFrom, "Transfer Fee");
     }
 }

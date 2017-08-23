@@ -40,33 +40,23 @@ public class DefaultTransactionServiceTests {
          String remark = "transfer 500 THB to A123";
 
         transactionService.createDefaultTransaction(accountId, transactionType, amount, balance, remark);
-        verify(transactionRepository, times(1)).insertTransaction(isA(String.class), isA(LocalDateTime.class), eq(accountId), eq(transactionType), eq(amount), eq(balance), eq(remark));
+        verify(transactionRepository).insertTransaction(isA(String.class), isA(LocalDateTime.class), eq(accountId), eq(transactionType), eq(amount), eq(balance), eq(remark));
     }
 
     @Test
     public void testLogTransferTransaction() {
-
-        /*
-         ID
-
-        EVENT_ID J
-                TRANSACTION_DATE
-        ACCOUNT_ID
-                TRANSACTION_TYPE
-        AMOUNT
-                BALANCE
-        REMARK
-*/
-        String eventId = new Timestamp(System.currentTimeMillis()).toString();
-        LocalDateTime transactionDateTime = LocalDateTime.now();
-        String accountId = "1";
+        String fromAccountId = "1";
+        String toAccountId = "2";
         TransactionType transactionType = TransactionType.TRANSFER;
-        Double amount = 500.00;
-        Double balance = 2000.00;
-        String remark = "transfer 500 THB to A123";
+        Double amount = 400.00;
+        Double balanceFrom = 2000.00;
+        Double balanceTo = 3000.00;
+        String remarkFrom = "transfer 400 THB to A123";
 
-      //  transactionService.createTransferTransaction(eventId, transactionDateTime, accountId, transactionType, amount, balance, remark);
-      //  verify(transactionRepository, times(3)).insertTransaction(eventId, transactionDateTime, accountId, transactionType, amount, balance, remark);
+        transactionService.createTransferTransaction(fromAccountId, toAccountId, amount, balanceFrom, balanceTo, remarkFrom);
+        verify(transactionRepository).insertTransaction(isA(String.class), isA(LocalDateTime.class), eq(fromAccountId), eq(TransactionType.TRANSFER), eq(amount), eq(balanceFrom), eq(remarkFrom));
+        verify(transactionRepository).insertTransaction(isA(String.class), isA(LocalDateTime.class), eq(toAccountId), eq(TransactionType.DEPOSIT), eq(amount), eq(balanceTo), eq(""));
+        verify(transactionRepository).insertTransaction(isA(String.class), isA(LocalDateTime.class), eq(fromAccountId), eq(TransactionType.WITHDRAW), eq(amount), eq(balanceFrom), eq("Transfer Fee"));
     }
 
 }

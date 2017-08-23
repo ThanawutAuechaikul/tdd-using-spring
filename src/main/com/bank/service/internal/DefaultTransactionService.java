@@ -32,12 +32,19 @@ public class DefaultTransactionService implements TransactionService {
     }
 
     @Override
-    public void createTransferTransaction(String fromAccountId, String toAccountId, Double amount, Double balanceFrom, Double balanceTo, String remarkFrom) {
+    public String createTransferTransaction(String fromAccountId, String toAccountId, Double amount, Double balanceFrom, Double balanceTo, String remarkFrom) {
         String eventId = getEventId();
 
         transactionRepository.insertTransaction(eventId, fromAccountId, TransactionType.TRANSFER.name(), amount, balanceFrom, remarkFrom);
         transactionRepository.insertTransaction(eventId, toAccountId, TransactionType.DEPOSIT.name(), amount, balanceTo, "");
         transactionRepository.insertTransaction(eventId, fromAccountId, TransactionType.WITHDRAW.name(), amount, balanceFrom, "Transfer Fee");
+
+        return eventId;
+    }
+
+    @Override
+    public void updateTransferTransaction(String eventId, String remarkTo) {
+        transactionRepository.updateTransferRemark(eventId, remarkTo);
     }
 
 }

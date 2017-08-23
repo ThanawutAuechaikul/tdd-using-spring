@@ -25,9 +25,6 @@ public class TransactionRepository implements TransactionHistoryRepository {
         jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
-    public void insertTransaction(String eventId, LocalDateTime transactionDateTime, String accountId, TransactionType transactionType, Double amount, Double balance, String remark) {
-
-    }
 
     @Override
     public TransactionSummaryResult getSummaryAmountGroupByType(SearchTransactionCriteria criteria) {
@@ -74,4 +71,8 @@ public class TransactionRepository implements TransactionHistoryRepository {
     }
 
 
+    public void updateTransferRemark(String eventId, String remarkTo) {
+        jdbcTemplate.update("update TRANSACTION_HISTORY set REMARK=? WHERE EVENT_ID=? and TRANSACTION_TYPE=?",
+                remarkTo, eventId, TransactionType.DEPOSIT.name());
+    }
 }

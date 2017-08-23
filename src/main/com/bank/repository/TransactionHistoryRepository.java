@@ -10,7 +10,6 @@ import java.util.List;
 
 public interface TransactionHistoryRepository {
 
-    public void insertTransaction(String eventId, LocalDateTime transactionDateTime, String accountId, TransactionType transactionType, Double amount, Double balance, String remark);
     public TransactionSummaryResult getSummaryAmountGroupByType(SearchTransactionCriteria criteria );
     public List<TransactionHistory> getTransactionHistory(SearchTransactionCriteria criteria);
     public int getTotalTransactionHistoryByAccountId(SearchTransactionCriteria criteria);

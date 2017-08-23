@@ -7,6 +7,7 @@ import com.bank.repository.AccountRepository;
 import com.bank.service.TransferService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import java.time.LocalTime;
 
@@ -20,9 +21,9 @@ public class VerifyTransferService implements TransferService {
     public TransferReceipt transfer(double amount, String srcAcctNo, String destAcctNo, String remark) throws InsufficientFundsException, InvalidTransferWindow {
         Account srcAccount = accountRepo.findByAccountNumber(srcAcctNo);
         Account desAccount = accountRepo.findByAccountNumber(destAcctNo);
-        if (srcAccount == null) {
+        if (ObjectUtils.isEmpty(srcAccount)) {
             throw new InvalidTransferWindow("Account " + srcAcctNo + " does not exist.");
-        } else if (desAccount == null) {
+        } else if (ObjectUtils.isEmpty(desAccount)) {
             throw new InvalidTransferWindow("Account " + destAcctNo + " does not exist.");
         }
         if (srcAccount.getBalance() < amount) {

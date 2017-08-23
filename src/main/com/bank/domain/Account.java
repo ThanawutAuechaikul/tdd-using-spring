@@ -19,11 +19,15 @@ package com.bank.domain;
 public class Account {
 
 	private final String id;
+	private String accountNumber;
 	private double balance;
+	private String fullName;
 
-	public Account(String id, double initialBalance) {
+	public Account(String id, String accountNumber, String fullName, double initialBalance) {
 		this.id = id;
+		this.accountNumber = accountNumber;
 		this.balance = initialBalance;
+		this.setFullName(fullName);
 	}
 
 	public void debit(double amount) throws InsufficientFundsException {
@@ -52,14 +56,30 @@ public class Account {
 	public void setBalance(double balance) {
 		this.balance = balance;
 	}
-	
+
+	public String getFullName() {
+		return fullName;
+	}
+
+	public void setFullName(String fullName) {
+		this.fullName = fullName;
+	}
+
+	public void setAccountNumber(String accountNumber) {
+		this.accountNumber = accountNumber;
+	}
+
 	private void assertValid(double amount) {
 		if (!(amount > 0.00))
 			throw new IllegalArgumentException("amount must be greater than zero");
 	}
 
 	public static Account copy(Account account) {
-		return new Account(account.getId(), account.getBalance());
+		return new Account(account.getId(), account.getAccountNumber(), account.getFullName(), account.getBalance());
 	}
 
+
+	public String getAccountNumber() {
+		return accountNumber;
+	}
 }

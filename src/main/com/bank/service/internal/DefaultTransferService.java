@@ -18,6 +18,7 @@ package com.bank.service.internal;
 import static java.lang.String.format;
 
 import com.bank.domain.*;
+import com.bank.dto.VerifyTransferResponseDTO;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bank.repository.AccountRepository;
@@ -47,6 +48,11 @@ public class DefaultTransferService implements TransferService {
     @Override
     public void setMinimumTransferAmount(double minimumTransferAmount) {
         this.minimumTransferAmount = minimumTransferAmount;
+    }
+
+    @Override
+    public VerifyTransferResponseDTO verifyTransfer(VerifyTransferBean verifyTransferBean) {
+        return null;
     }
 
     @Override

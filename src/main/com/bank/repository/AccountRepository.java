@@ -16,10 +16,19 @@
 package com.bank.repository;
 
 import com.bank.domain.Account;
+import com.bank.model.AccountSummary;
+
+import java.util.List;
 
 public interface AccountRepository {
 
     Account findById(String srcAcctId);
 
     void updateBalance(Account dstAcct);
+
+    Account findByAccountNumber(String srcAcctNo);
+
+    List<Account> findAllAccountsByUserId(String userId);
+
+    AccountSummary getAccountSummaryByAccountId(String accountId);
 }

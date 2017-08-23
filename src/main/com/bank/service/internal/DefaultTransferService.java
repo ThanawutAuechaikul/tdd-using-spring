@@ -18,7 +18,6 @@ package com.bank.service.internal;
 import static java.lang.String.format;
 
 import com.bank.domain.*;
-import com.bank.domain.VerifyTransferResponseDTO;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bank.repository.AccountRepository;
@@ -52,7 +51,7 @@ public class DefaultTransferService implements TransferService {
 
     @Override
     @Transactional
-    public TransferReceipt transfer(double amount, String srcAcctId, String dstAcctId)
+    public TransferReceipt transfer(double amount, String srcAcctId, String dstAcctId, String remark)
             throws InsufficientFundsException, InvalidTransferWindow {
 
         LocalTime transactionTime = this.localTimeWrapper.getCurrentTime();

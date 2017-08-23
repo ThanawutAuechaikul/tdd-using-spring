@@ -21,13 +21,12 @@ public class VerifyTransferService implements TransferService {
     private AccountRepository accountRepo;
 
     @Override
-    public TransferReceipt transfer(double amount, String srcAcctNo, String destAcctNo) throws InsufficientFundsException, InvalidTransferWindow {
+    public TransferReceipt transfer(double amount, String srcAcctNo, String destAcctNo, String remark) throws InsufficientFundsException, InvalidTransferWindow {
         accountRepo = new JdbcAccountRepository(dataSource);
         Account srcAccount;
         Account desAccount;
         try {
             srcAccount = accountRepo.findByAccountNumber(srcAcctNo);
-            desAccount = accountRepo.findByAccountNumber(destAcctNo);
         } catch (Exception e) {
             throw new InvalidTransferWindow("Account " + srcAcctNo + " does not exist.");
         }

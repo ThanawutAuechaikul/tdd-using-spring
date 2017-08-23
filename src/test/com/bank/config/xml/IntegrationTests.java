@@ -47,7 +47,7 @@ public class IntegrationTests {
         assertThat(accountRepository.findById("A123").getBalance(), equalTo(100.00));
         assertThat(accountRepository.findById("C456").getBalance(), equalTo(0.00));
 
-        transferService.transfer(10.00, "A123", "C456");
+        transferService.transfer(10.00, "A123", "C456", "Test Remark");
 
         assertThat(accountRepository.findById("A123").getBalance(), equalTo(90.00));
         assertThat(accountRepository.findById("C456").getBalance(), equalTo(10.00));

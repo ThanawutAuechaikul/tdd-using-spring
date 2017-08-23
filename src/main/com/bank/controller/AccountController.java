@@ -24,7 +24,7 @@ public class AccountController {
     @Autowired
     AccountService accountService;
 
-    @RequestMapping(value = "/getAccountListByUserId/userId/{userId}", method = {RequestMethod.GET}, produces = "application/json")
+    @RequestMapping(value = "/getAccountListByUserId/{userId}", method = {RequestMethod.GET}, produces = "application/json")
     public @ResponseBody List<Account> getAccountListByUserId(@PathVariable String userId) {
         return accountService.findAllAccountsByUserId(userId);
     }

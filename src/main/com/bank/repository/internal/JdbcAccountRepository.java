@@ -16,9 +16,6 @@
 package com.bank.repository.internal;
 
 import java.math.BigDecimal;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.sql.DataSource;
@@ -26,11 +23,12 @@ import javax.sql.DataSource;
 import com.bank.model.AccountSummary;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 
 import com.bank.domain.Account;
 import com.bank.repository.AccountRepository;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public class JdbcAccountRepository implements AccountRepository {
 
     @Autowired

@@ -40,7 +40,7 @@ public class JdbcAccountRepository implements AccountRepository {
 
     @Override
     public void updateBalance(Account dstAcct) {
-        jdbcTemplate.update("update ACCOUNT set balance = ? where id = ?", dstAcct.getBalance(), dstAcct.getId());
+        jdbcTemplate.update("update ACCOUNT set balance = ?, updated_date = NOW() where id = ?", dstAcct.getBalance(), dstAcct.getId());
     }
 
     @Override

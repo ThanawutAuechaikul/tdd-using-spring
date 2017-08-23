@@ -17,8 +17,8 @@ package com.bank.service;
 
 import com.bank.domain.InsufficientFundsException;
 import com.bank.domain.TransferReceipt;
-import com.bank.domain.VerifyTransferBean;
-import com.bank.dto.VerifyTransferResponseDTO;
+import com.bank.domain.VerifyTransfer;
+import com.bank.domain.VerifyTransferResponseDTO;
 import com.bank.service.internal.InvalidTransferWindow;
 
 public interface TransferService {
@@ -28,5 +28,4 @@ public interface TransferService {
 
     void setMinimumTransferAmount(double minimumTransferAmount);
 
-    VerifyTransferResponseDTO verifyTransfer(VerifyTransferBean verifyTransferBean);
 }

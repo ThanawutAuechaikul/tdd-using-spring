@@ -1,4 +1,4 @@
-package com.bank.dto;
+package com.bank.domain;
 
 import com.bank.domain.Account;
 

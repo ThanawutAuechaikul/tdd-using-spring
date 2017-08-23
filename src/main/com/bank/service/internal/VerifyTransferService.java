@@ -3,8 +3,6 @@ package com.bank.service.internal;
 import com.bank.domain.Account;
 import com.bank.domain.InsufficientFundsException;
 import com.bank.domain.TransferReceipt;
-import com.bank.domain.VerifyTransferBean;
-import com.bank.dto.VerifyTransferResponseDTO;
 import com.bank.repository.AccountRepository;
 import com.bank.repository.internal.JdbcAccountRepository;
 import com.bank.service.TransferService;
@@ -12,36 +10,57 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.sql.DataSource;
+import java.time.LocalTime;
 
 @Service
-public class VerifyTransferService implements TransferService{
+public class VerifyTransferService implements TransferService {
 
     @Autowired
     DataSource dataSource;
 
+    private AccountRepository accountRepo;
+
     @Override
-    public VerifyTransferResponseDTO verifyTransfer(VerifyTransferBean transferBean) {
-        String accountNumber = transferBean.getToAccount().getAccountNumber();
-        AccountRepository accountRep = new JdbcAccountRepository(dataSource);
-        Account account = accountRep.findByAccountNumber(accountNumber);
-        VerifyTransferResponseDTO responseDTO = new VerifyTransferResponseDTO();
-        if (account != null) {
-            responseDTO.setValid(true);
-            responseDTO.setAmount(transferBean.getAmount());
-            responseDTO.setFromRemark(transferBean.getFromRemark());
-            responseDTO.setFromAccount(transferBean.getFromAccount());
-            responseDTO.setToAccount(account);
-        } else {
-            responseDTO.setValid(false);
-            responseDTO.setErrorMessage("Account Number does not exist.");
+    public TransferReceipt transfer(double amount, String srcAcctNo, String destAcctNo) throws InsufficientFundsException, InvalidTransferWindow {
+        accountRepo = new JdbcAccountRepository(dataSource);
+        Account srcAccount;
+        Account desAccount;
+        try {
+            srcAccount = accountRepo.findByAccountNumber(srcAcctNo);
+            desAccount = accountRepo.findByAccountNumber(destAcctNo);
+        } catch (Exception e) {
+            throw new InvalidTransferWindow("Account " + srcAcctNo + " does not exist.");
+        }
+        try {
+            desAccount = accountRepo.findByAccountNumber(destAcctNo);
+        } catch (Exception e) {
+            throw new InvalidTransferWindow("Account " + destAcctNo + " does not exist.");
+        }
+        if (srcAccount.getBalance() < amount) {
+            throw new InsufficientFundsException(srcAccount, amount);
         }
 
-        return responseDTO;
+        TransferReceipt transferReceipt = new TransferReceipt(LocalTime.now());
+        transferReceipt.setFeeAmount(0.00);
+        transferReceipt.setTransferAmount(amount);
+        transferReceipt.setInitialSourceAccount(srcAccount);
+
+        srcAccount.setBalance(srcAccount.getBalance() - amount);
+        transferReceipt.setFinalSourceAccount(srcAccount);
+
+        transferReceipt.setInitialDestinationAccount(desAccount);
+
+        desAccount.setBalance(desAccount.getBalance() + amount);
+        transferReceipt.setFinalDestinationAccount(desAccount);
+
+        persistAccount(transferReceipt);
+
+        return transferReceipt;
     }
 
-    @Override
-    public TransferReceipt transfer(double amount, String srcAcctId, String destAcctId) throws InsufficientFundsException, InvalidTransferWindow {
-        return null;
+    private void persistAccount(TransferReceipt transferReceipt) {
+        accountRepo.updateBalance(transferReceipt.getFinalSourceAccount());
+        accountRepo.updateBalance(transferReceipt.getFinalDestinationAccount());
     }
 
     @Override

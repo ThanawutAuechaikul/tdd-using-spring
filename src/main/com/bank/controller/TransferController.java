@@ -1,7 +1,7 @@
 package com.bank.controller;
 
-import com.bank.dto.VerifyTransferRequestDTO;
-import com.bank.dto.VerifyTransferResponseDTO;
+import com.bank.domain.VerifyTransferRequestDTO;
+import com.bank.domain.VerifyTransferResponseDTO;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;

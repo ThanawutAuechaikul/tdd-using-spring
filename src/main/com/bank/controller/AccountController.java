@@ -5,6 +5,8 @@ import com.bank.model.AccountSummary;
 import com.bank.repository.AccountRepository;
 import com.bank.repository.internal.JdbcAccountRepository;
 import com.bank.repository.internal.SimpleAccountRepository;
+import com.bank.service.AccountService;
+import com.bank.service.internal.DefaultAccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -19,10 +21,12 @@ public class AccountController {
     @Autowired
     DataSource dataSource;
 
-    @RequestMapping(value = "/getAccountListByUserId", method = {RequestMethod.GET}, produces = "application/json")
-    public @ResponseBody List<Account> getAccountListByUserId(@RequestParam String userId) {
-        AccountRepository accountRep = new JdbcAccountRepository(dataSource);
-        return accountRep.findAllAccountsByUserId(userId);
+    @Autowired
+    AccountService accountService;
+
+    @RequestMapping(value = "/getAccountListByUserId/userId/{userId}", method = {RequestMethod.GET}, produces = "application/json")
+    public @ResponseBody List<Account> getAccountListByUserId(@PathVariable String userId) {
+        return accountService.findAllAccountsByUserId(userId);
     }
 
     @RequestMapping(value = "accountSummary/accountId/{accountId}", method = {RequestMethod.GET}, produces = "application/json")

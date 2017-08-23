@@ -25,9 +25,6 @@ public class TransactionRepository implements TransactionHistoryRepository {
         jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
-    public void insertTransaction(String eventId, LocalDateTime transactionDateTime, String accountId, TransactionType transactionType, Double amount, Double balance, String remark) {
-
-    }
 
     @Override
     public TransactionSummaryResult getSummaryAmountGroupByType(SearchTransactionCriteria criteria) {
@@ -36,8 +33,12 @@ public class TransactionRepository implements TransactionHistoryRepository {
 
         List<TransactionSummary> summaryList = jdbcTemplate.query(
                 "select TRANSACTION_TYPE, sum(AMOUNT) as SUM_AMOUNT from TRANSACTION_HISTORY where ACCOUNT_ID = ? and TRANSACTION_DATE between ? and ? group by TRANSACTION_TYPE",
-                (rs, rowNum) -> new TransactionSummary(TransactionType.valueOf(rs.getString("TRANSACTION_TYPE")),  rs.getBigDecimal("SUM_AMOUNT"))
-                , criteria.getAccountId(), criteria.getFromDate(), criteria.getToDate());
+                (rs, rowNum) -> new TransactionSummary(
+                        TransactionType.valueOf(rs.getString("TRANSACTION_TYPE")),
+                        rs.getBigDecimal("SUM_AMOUNT"))
+                , criteria.getAccountId(),
+                criteria.getFromDate(),
+                criteria.getToDate());
 
         result.setTransactionTypes(summaryList);
 
@@ -46,16 +47,22 @@ public class TransactionRepository implements TransactionHistoryRepository {
 
     @Override
     public List<TransactionHistory> getTransactionHistory(SearchTransactionCriteria criteria) {
-        List<TransactionHistory> result = jdbcTemplate.query("select * from TRANSACTION_HISTORY where ACCOUNT_ID = ? and TRANSACTION_DATE between ? and ? limit ? offset ?",
+        List<TransactionHistory> result = jdbcTemplate.query("select * from TRANSACTION_HISTORY where ACCOUNT_ID = ? and TRANSACTION_DATE between ? and ? order by "+criteria.getOrderBy()+" "+criteria.getDirection()+" limit ? offset ?",
                 (rs, rowNum) -> new TransactionHistory(
 
                         rs.getString("ID"),
                         rs.getString("EVENT_ID"),
                         new Date(rs.getTimestamp("TRANSACTION_DATE").getTime()), null,
                         TransactionType.valueOf(rs.getString("TRANSACTION_TYPE")),
-                        rs.getBigDecimal("AMOUNT"), rs.getBigDecimal("BALANCE"), rs.getString("REMARK")
+                        rs.getBigDecimal("AMOUNT"),
+                        rs.getBigDecimal("BALANCE"),
+                        rs.getString("REMARK")
                 )
-                , criteria.getAccountId(), criteria.getFromDate(), criteria.getToDate(),criteria.getLimit(),criteria.getOffset());
+                , criteria.getAccountId(),
+                criteria.getFromDate(),
+                criteria.getToDate(),
+                criteria.getLimit(),
+                criteria.getOffset());
         return  result;
     }
 
@@ -74,4 +81,8 @@ public class TransactionRepository implements TransactionHistoryRepository {
     }
 
 
+    public void updateTransferRemark(String eventId, String remarkTo) {
+        jdbcTemplate.update("update TRANSACTION_HISTORY set REMARK=? WHERE EVENT_ID=? and TRANSACTION_TYPE=?",
+                remarkTo, eventId, TransactionType.DEPOSIT.name());
+    }
 }

@@ -18,7 +18,7 @@ public class TransferController {
     TransferService transferService;
 
     @RequestMapping(value = "/transfer", method = RequestMethod.POST, produces = "application/json")
-    public TransferReceipt verifyTransfer(@RequestBody TransferRequest request) throws InsufficientFundsException, InvalidTransferWindow {
+    public TransferReceipt transfer(@RequestBody TransferRequest request) throws InsufficientFundsException, InvalidTransferWindow {
 
         return transferService.transfer(request.getAmount(), request.getSrcAccount(), request.getDestAccount(), request.getRemark());
     }

@@ -34,6 +34,7 @@ public class VerifyTransferService implements TransferService {
         transferReceipt.setFeeAmount(0.00);
         transferReceipt.setTransferAmount(amount);
         transferReceipt.setInitialSourceAccount(srcAccount);
+        transferReceipt.setSrcRemark(remark);
 
         srcAccount.setBalance(srcAccount.getBalance() - amount);
         transferReceipt.setFinalSourceAccount(srcAccount);

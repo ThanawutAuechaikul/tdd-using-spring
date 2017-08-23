@@ -7,11 +7,14 @@ import com.bank.model.TransactionSummaryResult;
 import com.bank.repository.TransactionHistoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
+@Repository
 public class TransactionRepository implements TransactionHistoryRepository {
 
     @Autowired
@@ -38,5 +41,10 @@ public class TransactionRepository implements TransactionHistoryRepository {
         result.setTransactionTypes(summaryList);
 
         return result;
+    }
+
+    public void insertTransaction(String eventId, String accountId, String transactionType, Double amount, Double balance, String remark) {
+        jdbcTemplate.update("insert into TRANSACTION_HISTORY (EVENT_ID,TRANSACTION_DATE, ACCOUNT_ID, TRANSACTION_TYPE, AMOUNT, BALANCE, REMARK)" +
+                                 " values(?, ?, ?, ?, ?, ?, ?)", eventId, new Date(), accountId, transactionType, amount, balance, remark);
     }
 }

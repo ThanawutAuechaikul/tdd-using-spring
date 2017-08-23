@@ -17,6 +17,7 @@ import javax.sql.DataSource;
 import java.util.List;
 
 @RestController
+@CrossOrigin
 public class AccountController {
     @Autowired
     DataSource dataSource;

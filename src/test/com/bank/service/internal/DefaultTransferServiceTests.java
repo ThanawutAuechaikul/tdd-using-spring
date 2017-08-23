@@ -45,7 +45,7 @@ public class DefaultTransferServiceTests {
         transferService = new DefaultTransferService(accountRepository, feePolicy, localTimeWrapper, transferWindow);
 
         try {
-            transferService.transfer(transferAmount, A123_ID, C456_ID);
+            transferService.transfer(transferAmount, A123_ID, C456_ID, "Test Remark");
             fail("expected InvalidTransactionWindowTime");
         } catch (InsufficientFundsException e) {
             //e.printStackTrace();
@@ -60,7 +60,7 @@ public class DefaultTransferServiceTests {
     public void testTransfer() throws InsufficientFundsException, InvalidTransferWindow {
         double transferAmount = 100.00;
 
-        TransferReceipt receipt = transferService.transfer(transferAmount, A123_ID, C456_ID);
+        TransferReceipt receipt = transferService.transfer(transferAmount, A123_ID, C456_ID, "Test Remark");
 
         assertThat(receipt.getTransferAmount(), equalTo(transferAmount));
         assertThat(receipt.getFinalSourceAccount().getBalance(), equalTo(A123_INITIAL_BAL - transferAmount));
@@ -76,7 +76,7 @@ public class DefaultTransferServiceTests {
         double transferAmount = A123_INITIAL_BAL + overage;
 
         try {
-            transferService.transfer(transferAmount, A123_ID, C456_ID);
+            transferService.transfer(transferAmount, A123_ID, C456_ID, "Test Remark");
             fail("expected InsufficientFundsException");
         } catch (InsufficientFundsException ex) {
             assertThat(ex.getTargetAccountId(), equalTo(A123_ID));
@@ -90,7 +90,7 @@ public class DefaultTransferServiceTests {
     @Test
     public void testNonExistentSourceAccount() throws InsufficientFundsException, InvalidTransferWindow {
         try {
-            transferService.transfer(1.00, Z999_ID, C456_ID);
+            transferService.transfer(1.00, Z999_ID, C456_ID, "Test Remark");
             fail("expected AccountNotFoundException");
         } catch (AccountNotFoundException ex) {
         }
@@ -101,7 +101,7 @@ public class DefaultTransferServiceTests {
     @Test
     public void testNonExistentDestinationAccount() throws InsufficientFundsException, InvalidTransferWindow {
         try {
-            transferService.transfer(1.00, A123_ID, Z999_ID);
+            transferService.transfer(1.00, A123_ID, Z999_ID, "Test Remark");
             fail("expected AccountNotFoundException");
         } catch (AccountNotFoundException ex) {
         }
@@ -112,7 +112,7 @@ public class DefaultTransferServiceTests {
     @Test
     public void testZeroTransferAmount() throws InsufficientFundsException, InvalidTransferWindow {
         try {
-            transferService.transfer(0.00, A123_ID, C456_ID);
+            transferService.transfer(0.00, A123_ID, C456_ID, "Test Remark");
             fail("expected IllegalArgumentException");
         } catch (IllegalArgumentException ex) {
         }
@@ -121,7 +121,7 @@ public class DefaultTransferServiceTests {
     @Test
     public void testNegativeTransferAmount() throws InsufficientFundsException, InvalidTransferWindow {
         try {
-            transferService.transfer(-100.00, A123_ID, C456_ID);
+            transferService.transfer(-100.00, A123_ID, C456_ID, "Test Remark");
             fail("expected IllegalArgumentException");
         } catch (IllegalArgumentException ex) {
         }
@@ -130,7 +130,7 @@ public class DefaultTransferServiceTests {
     @Test
     public void testTransferAmountLessThanOneCent() throws InsufficientFundsException, InvalidTransferWindow {
         try {
-            transferService.transfer(0.009, A123_ID, C456_ID);
+            transferService.transfer(0.009, A123_ID, C456_ID, "Test Remark");
             fail("expected IllegalArgumentException");
         } catch (IllegalArgumentException ex) {
         }
@@ -138,11 +138,11 @@ public class DefaultTransferServiceTests {
 
     @Test
     public void testCustomizedMinimumTransferAmount() throws InsufficientFundsException, InvalidTransferWindow {
-        transferService.transfer(1.00, A123_ID, C456_ID); // should be fine
+        transferService.transfer(1.00, A123_ID, C456_ID, "Test Remark"); // should be fine
         transferService.setMinimumTransferAmount(10.00);
-        transferService.transfer(10.00, A123_ID, C456_ID); // fine against new minimum
+        transferService.transfer(10.00, A123_ID, C456_ID, "Test Remark"); // fine against new minimum
         try {
-            transferService.transfer(9.00, A123_ID, C456_ID); // violates new minimum!
+            transferService.transfer(9.00, A123_ID, C456_ID, "Test Remark"); // violates new minimum!
             fail("expected IllegalArgumentException on 9.00 transfer that violates 10.00 minimum");
         } catch (IllegalArgumentException ex) {
         }
@@ -155,7 +155,7 @@ public class DefaultTransferServiceTests {
         LocalTimeWrapper localTimeWrapper = new LocalTimeWrapper();
         DefaultTransferWindow transferWindow = new DefaultTransferWindow("06:00:00", "22:00:00");
         transferService = new DefaultTransferService(accountRepository, new FlatFeePolicy(flatFee), localTimeWrapper, transferWindow);
-        transferService.transfer(transferAmount, A123_ID, C456_ID);
+        transferService.transfer(transferAmount, A123_ID, C456_ID, "Test Remark");
         assertThat(accountRepository.findById(A123_ID).getBalance(), equalTo(A123_INITIAL_BAL - transferAmount - flatFee));
         assertThat(accountRepository.findById(C456_ID).getBalance(), equalTo(C456_INITIAL_BAL + transferAmount));
     }

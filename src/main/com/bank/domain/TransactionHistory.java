@@ -14,6 +14,17 @@ public class TransactionHistory {
     private BigDecimal balance;
     private String remark;
 
+    public TransactionHistory(String id, String eventId, Date transactionDate, Account account, TransactionType transactionType, BigDecimal amount, BigDecimal balance, String remark) {
+        this.id = id;
+        this.eventId = eventId;
+        this.transactionDate = transactionDate;
+        this.account = account;
+        this.transactionType = transactionType;
+        this.amount = amount;
+        this.balance = balance;
+        this.remark = remark;
+    }
+
     public String getId() {
         return id;
     }

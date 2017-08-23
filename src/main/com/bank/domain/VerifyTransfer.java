@@ -2,7 +2,7 @@ package com.bank.domain;
 
 import javax.validation.constraints.Digits;
 
-public class VerifyTransferBean {
+public class VerifyTransfer {
 
     private String fromRemark;
 

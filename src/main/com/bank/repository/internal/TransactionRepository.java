@@ -1,5 +1,6 @@
 package com.bank.repository.internal;
 
+import com.bank.domain.TransactionHistory;
 import com.bank.domain.TransactionType;
 import com.bank.model.SearchTransactionCriteria;
 import com.bank.model.TransactionSummary;
@@ -43,8 +44,34 @@ public class TransactionRepository implements TransactionHistoryRepository {
         return result;
     }
 
+    @Override
+    public List<TransactionHistory> getTransactionHistory(SearchTransactionCriteria criteria) {
+        List<TransactionHistory> result = jdbcTemplate.query("select * from TRANSACTION_HISTORY where ACCOUNT_ID = ? and TRANSACTION_DATE between ? and ? limit ? offset ?",
+                (rs, rowNum) -> new TransactionHistory(
+
+                        rs.getString("ID"),
+                        rs.getString("EVENT_ID"),
+                        new Date(rs.getTimestamp("TRANSACTION_DATE").getTime()), null,
+                        TransactionType.valueOf(rs.getString("TRANSACTION_TYPE")),
+                        rs.getBigDecimal("AMOUNT"), rs.getBigDecimal("BALANCE"), rs.getString("REMARK")
+                )
+                , criteria.getAccountId(), criteria.getFromDate(), criteria.getToDate(),criteria.getLimit(),criteria.getOffset());
+        return  result;
+    }
+
+    @Override
+    public int getTotalTransactionHistoryByAccountId(SearchTransactionCriteria criteria) {
+        int result = jdbcTemplate.queryForObject("select count(*) from TRANSACTION_HISTORY where ACCOUNT_ID = ? and TRANSACTION_DATE between ? and ? ",
+                (rs, rowNum) -> rs.getInt(1)
+
+                , criteria.getAccountId(), criteria.getFromDate(), criteria.getToDate());
+        return  result;
+    }
+
     public void insertTransaction(String eventId, String accountId, String transactionType, Double amount, Double balance, String remark) {
         jdbcTemplate.update("insert into TRANSACTION_HISTORY (EVENT_ID,TRANSACTION_DATE, ACCOUNT_ID, TRANSACTION_TYPE, AMOUNT, BALANCE, REMARK)" +
                                  " values(?, ?, ?, ?, ?, ?, ?)", eventId, new Date(), accountId, transactionType, amount, balance, remark);
     }
+
+
 }

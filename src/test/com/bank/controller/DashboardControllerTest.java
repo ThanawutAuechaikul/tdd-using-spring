@@ -1,6 +1,7 @@
 package com.bank.controller;
 
 import com.bank.model.SearchTransactionCriteria;
+import com.bank.model.TransactionHistoryResult;
 import com.bank.model.TransactionSummaryResult;
 import com.bank.repository.internal.TransactionRepository;
 import com.bank.service.DashboardService;
@@ -38,6 +39,16 @@ public class DashboardControllerTest {
         doReturn(new TransactionSummaryResult()).when(service).getPiechartData(accountId);
         controller.getPieChartData(accountId);
         verify( service ).getPiechartData(accountId);
+    }
+
+    @Test
+    public void testGetTransactionHistory(){
+        String accountId = "1";
+        int offset = 0;
+        int limit = 10;
+        doReturn(new TransactionHistoryResult()).when(service).getTransactionHistory(accountId,offset,limit);
+        controller.getTransactionHistory(accountId,offset,limit);
+        verify(service).getTransactionHistory(accountId,offset,limit);
     }
 
 

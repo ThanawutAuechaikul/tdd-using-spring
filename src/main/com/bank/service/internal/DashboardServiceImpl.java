@@ -1,7 +1,9 @@
 package com.bank.service.internal;
 
+import com.bank.domain.TransactionHistory;
 import com.bank.domain.TransactionType;
 import com.bank.model.SearchTransactionCriteria;
+import com.bank.model.TransactionHistoryResult;
 import com.bank.model.TransactionSummaryResult;
 import com.bank.repository.TransactionHistoryRepository;
 import com.bank.repository.internal.TransactionRepository;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Service;
 import javax.sql.DataSource;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class DashboardServiceImpl implements DashboardService {
@@ -29,10 +32,27 @@ public class DashboardServiceImpl implements DashboardService {
         return criteria;
     }
 
+    SearchTransactionCriteria getDashboardSearchCriteria(String accountId, int offset, int limit) {
+        SearchTransactionCriteria criteria = getDashboardSearchCriteria(accountId);
+        criteria.setOffset(offset);
+        criteria.setLimit(limit);
+        return criteria;
+    }
+
     @Override
     public TransactionSummaryResult getPiechartData(String accountId) {
         SearchTransactionCriteria criteria = getDashboardSearchCriteria(accountId);
         TransactionRepository transactionRepository = new TransactionRepository(dataSource);
         return transactionRepository.getSummaryAmountGroupByType( criteria );
+    }
+
+    @Override
+    public TransactionHistoryResult getTransactionHistory(String accountId, int offset, int limit) {
+        SearchTransactionCriteria criteria = getDashboardSearchCriteria(accountId, offset, limit);
+        TransactionHistoryResult result = new TransactionHistoryResult();
+        TransactionRepository transactionRepository = new TransactionRepository(dataSource);
+        result.setTotal(transactionRepository.getTotalTransactionHistoryByAccountId(criteria));
+        result.setTransactionHistories(transactionRepository.getTransactionHistory(criteria));
+        return result;
     }
 }

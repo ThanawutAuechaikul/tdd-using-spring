@@ -5,6 +5,7 @@ import com.bank.repository.AccountNotFoundException;
 import com.bank.repository.AccountRepository;
 import com.bank.repository.internal.TransactionRepository;
 import com.bank.service.FeePolicy;
+import com.bank.service.TransactionService;
 import com.bank.service.TransferService;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,14 +26,14 @@ import static org.junit.Assert.fail;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class DefaultTransactionServiceTests {
+public class DefaultTransactionServiceTest {
     @Mock
     private TransactionRepository transactionRepository;
     @InjectMocks
-    private TransactionService transactionService;
+    private DefaultTransactionService transactionService;
 
     @Test
-    public void testLogTransaction() {
+    public void testCreateDefaultTransaction() {
          String accountId = "1";
          TransactionType transactionType = TransactionType.TRANSFER;
          Double amount = 500.00;
@@ -40,11 +41,11 @@ public class DefaultTransactionServiceTests {
          String remark = "transfer 500 THB to A123";
 
         transactionService.createDefaultTransaction(accountId, transactionType, amount, balance, remark);
-        verify(transactionRepository).insertTransaction(isA(String.class), isA(LocalDateTime.class), eq(accountId), eq(transactionType), eq(amount), eq(balance), eq(remark));
+        verify(transactionRepository).insertTransaction(isA(String.class), eq(accountId), eq(transactionType.name()), eq(amount), eq(balance), eq(remark));
     }
 
     @Test
-    public void testLogTransferTransaction() {
+    public void testCreateTransferTransaction() {
         String fromAccountId = "1";
         String toAccountId = "2";
         TransactionType transactionType = TransactionType.TRANSFER;
@@ -54,9 +55,18 @@ public class DefaultTransactionServiceTests {
         String remarkFrom = "transfer 400 THB to A123";
 
         transactionService.createTransferTransaction(fromAccountId, toAccountId, amount, balanceFrom, balanceTo, remarkFrom);
-        verify(transactionRepository).insertTransaction(isA(String.class), isA(LocalDateTime.class), eq(fromAccountId), eq(TransactionType.TRANSFER), eq(amount), eq(balanceFrom), eq(remarkFrom));
-        verify(transactionRepository).insertTransaction(isA(String.class), isA(LocalDateTime.class), eq(toAccountId), eq(TransactionType.DEPOSIT), eq(amount), eq(balanceTo), eq(""));
-        verify(transactionRepository).insertTransaction(isA(String.class), isA(LocalDateTime.class), eq(fromAccountId), eq(TransactionType.WITHDRAW), eq(amount), eq(balanceFrom), eq("Transfer Fee"));
+        verify(transactionRepository).insertTransaction(isA(String.class), eq(fromAccountId), eq(TransactionType.TRANSFER.name()), eq(amount), eq(balanceFrom), eq(remarkFrom));
+        verify(transactionRepository).insertTransaction(isA(String.class), eq(toAccountId), eq(TransactionType.DEPOSIT.name()), eq(amount), eq(balanceTo), eq(""));
+        verify(transactionRepository).insertTransaction(isA(String.class), eq(fromAccountId), eq(TransactionType.WITHDRAW.name()), eq(amount), eq(balanceFrom), eq("Transfer Fee"));
+    }
+
+    @Test
+    public void testUpdateTransferTransaction() {
+        String remarkTo = "transfer already";
+        String eventId = "20170823161515133";
+
+        transactionService.updateTransferTransaction(eventId, remarkTo);
+        verify(transactionRepository).updateTransferRemark(eq(eventId), eq(remarkTo));
     }
 
 }

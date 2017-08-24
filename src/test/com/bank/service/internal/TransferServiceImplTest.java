@@ -11,10 +11,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.time.LocalTime;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TransferServiceImplTest {
@@ -47,6 +51,7 @@ public class TransferServiceImplTest {
     public void testTransferService() throws Exception {
         double amountABefore = accountA.getBalance();
         double amountBBefore = accountB.getBalance();
+
         double amount = 20.00;
         String remark = "Transfer 20B from A to B.";
 
@@ -83,10 +88,11 @@ public class TransferServiceImplTest {
         assertEquals(remark, receipt.getSrcRemark());
     }
 
-    /*
+
     @Test
     public void testTransactionLogAfterTransferFinished() throws Exception {
-        doReturn(anyString()).when(transactionService).createTransferTransaction();
+        TransferReceipt transferReceipt = transferService.transfer(1, "1234567890", "1234567800", "Transfer 1000B from A to B.");
+        verify(transactionService).createTransferTransaction(transferReceipt);
     }
-    */
+
 }

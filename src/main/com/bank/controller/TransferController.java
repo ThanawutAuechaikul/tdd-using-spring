@@ -1,10 +1,8 @@
 package com.bank.controller;
 
 import com.bank.com.bank.constant.Constant;
-import com.bank.domain.InsufficientFundsException;
-import com.bank.domain.TransferReceipt;
-import com.bank.domain.TransferRequest;
-import com.bank.domain.TransferResponse;
+import com.bank.domain.*;
+import com.bank.dto.TransferDTO;
 import com.bank.service.TransferService;
 import com.bank.service.internal.InvalidTransferWindow;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +11,9 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @CrossOrigin
 public class TransferController {
+
+    @Autowired
+    TransferDTO dto;
 
     @Autowired
     TransferService transferService;
@@ -24,7 +25,7 @@ public class TransferController {
         try {
             TransferReceipt receipt = transferService.transfer(request.getAmount(), request.getSrcAccount(), request.getDestAccount(), request.getRemark());
             response.setStatus(Constant.SUCCESS);
-            response.setTransferSummary(receipt);
+            response.setTransferSummary(dto.transform(receipt));
         } catch (Exception ex) {
             response.setStatus(Constant.FAILED);
             response.setErrorMessage(ex.getMessage());
@@ -39,7 +40,7 @@ public class TransferController {
         try {
             TransferReceipt receipt = transferService.verify(request);
             response.setStatus(Constant.SUCCESS);
-            response.setTransferSummary(receipt);
+            response.setTransferSummary(dto.transform(receipt));
         } catch (Exception ex) {
             response.setStatus(Constant.FAILED);
             response.setErrorMessage(ex.getMessage());

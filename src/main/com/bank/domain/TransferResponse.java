@@ -8,20 +8,15 @@ public class TransferResponse {
     private String errorMessage;
 
     public TransferResponse() {
-        transferSummary = new VerifyTransfer();
+
     }
 
     public VerifyTransfer getTransferSummary() {
         return transferSummary;
     }
 
-    public void setTransferSummary(TransferReceipt receipt) {
-        this.transferSummary.setAmount(receipt.getTransferAmount());
-        this.transferSummary.setFromAccount(receipt.getFinalSourceAccount());
-        this.transferSummary.setToAccount(receipt.getFinalDestinationAccount());
-        this.transferSummary.setFromRemark(receipt.getSrcRemark());
-        this.transferSummary.setToRemark(receipt.getDesRemark());
-        this.transferSummary.setBalance(receipt.getFinalSourceAccount().getBalance());
+    public void setTransferSummary(VerifyTransfer transferSummary) {
+        this.transferSummary = transferSummary;
     }
 
     public String getStatus() {

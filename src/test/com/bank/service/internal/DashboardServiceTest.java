@@ -29,7 +29,7 @@ public class DashboardServiceTest {
     private TransactionRepository transactionRepository;
 
     @Test
-    public void testGetPieChartSearchHistoryCriteria() {
+    public void testGetDashboardSearchCriteria() {
 
 
         Date currentDate = new Date();

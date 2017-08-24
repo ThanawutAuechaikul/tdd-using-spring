@@ -15,7 +15,7 @@ import org.springframework.util.ObjectUtils;
 import java.time.LocalTime;
 
 @Service
-public class VerifyTransferService implements TransferService {
+public class TransferServiceImpl implements TransferService {
 
     @Autowired
     private AccountRepository accountRepo;

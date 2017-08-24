@@ -10,11 +10,9 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.dao.DataAccessException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 
@@ -25,7 +23,10 @@ public class VerifyTransferServiceTest {
     private JdbcAccountRepository accountRepo;
 
     @InjectMocks
-    private VerifyTransferService transferService;
+    private TransferServiceImpl transferService;
+
+    @InjectMocks
+    private DefaultTransactionService transactionService;
 
     private Account accountA;
     private Account accountB;
@@ -43,7 +44,7 @@ public class VerifyTransferServiceTest {
     }
 
     @Test
-    public void testTransferService() throws Exception, InvalidTransferWindow {
+    public void testTransferService() throws Exception {
         double amountABefore = accountA.getBalance();
         double amountBBefore = accountB.getBalance();
         double amount = 20.00;
@@ -74,4 +75,26 @@ public class VerifyTransferServiceTest {
 
     }
 
+    @Test
+    public void testVerifyIfHappyFlow() throws Exception {
+        double amountABefore = accountA.getBalance();
+        double amountBBefore = accountB.getBalance();
+        double amount = 20.00;
+        String remark = "Transfer 20B from A to B.";
+
+        TransferReceipt receipt = transferService.transfer(amount, "1234567890", "1234567800", remark);
+
+        assertTrue(amount == amountABefore - receipt.getFinalSourceAccount().getBalance());
+        assertTrue(amount == receipt.getFinalDestinationAccount().getBalance() - amountBBefore);
+        assertEquals(remark, receipt.getSrcRemark());
+    }
+
+    /*
+    @Test
+    public void testTransactionLogAfterTransferFinished() throws Exception {
+
+
+        doReturn(anyString()).when(transactionService).createTransferTransaction()
+    }
+    */
 }

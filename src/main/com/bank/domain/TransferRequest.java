@@ -38,4 +38,13 @@ public class TransferRequest {
     public void setDestAccount(String destAccount) {
         this.destAccount = destAccount;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        TransferRequest request = (TransferRequest) obj;
+        return this.srcAccount.equals(request.srcAccount) &&
+                this.destAccount.equals(request.destAccount) &&
+                this.remark.equals(request.remark) &&
+                this.amount == request.getAmount();
+    }
 }

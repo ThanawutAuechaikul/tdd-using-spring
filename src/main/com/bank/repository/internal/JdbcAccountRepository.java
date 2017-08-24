@@ -56,7 +56,7 @@ public class JdbcAccountRepository implements AccountRepository {
     }
 
     @Override
-    public Account findByAccountNumber(String srcAcctNo) {
+    public Account findByAccountNumber(String srcAcctNo) throws Exception{
         Account result = jdbcTemplate.queryForObject(
                 "SELECT * FROM ACCOUNT where ACCOUNT_NUMBER = ?",
                 (rs, rowNum) -> new Account(rs.getString("ID"), rs.getString("ACCOUNT_NUMBER"),

@@ -33,16 +33,17 @@ public class SimpleAccountRepository implements AccountRepository {
 
         public static final String A123_ID = "A123";
         public static final String A123_ACCOUNTNO = "1234567890";
-        public static final String A123_FULLNAME =  "John Smith";
+        public static final String A123_FULLNAME = "John Smith";
 
         public static final String C456_ID = "C456";
         public static final String C456_ACCOUNTNO = "1234567800";
-        public static final String C456_FULLNAME =  "John Smith";
+        public static final String C456_FULLNAME = "John Smith";
 
         public static final String Z999_ID = "Z999"; // NON EXISTENT ID
         public static final double A123_INITIAL_BAL = 100.00;
         public static final double C456_INITIAL_BAL = 0.00;
     }
+
     @SuppressWarnings("serial")
     private final Map<String, Account> accountsById = new HashMap<String, Account>() {
 
@@ -64,7 +65,7 @@ public class SimpleAccountRepository implements AccountRepository {
     }
 
     @Override
-    public Account findByAccountNumber(String srcAcctNo) {
+    public Account findByAccountNumber(String srcAcctNo) throws Exception {
         return null;
     }
 
@@ -75,8 +76,7 @@ public class SimpleAccountRepository implements AccountRepository {
             accounts.add(new Account(Data.A123_ID, Data.A123_ACCOUNTNO, Data.A123_FULLNAME, Data.A123_INITIAL_BAL));
             accounts.add(new Account(Data.C456_ID, Data.C456_ACCOUNTNO, Data.C456_FULLNAME, Data.C456_INITIAL_BAL));
             return accounts;
-        }
-        else {
+        } else {
             return new ArrayList<>();
         }
     }

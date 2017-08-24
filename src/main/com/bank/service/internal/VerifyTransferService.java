@@ -3,9 +3,11 @@ package com.bank.service.internal;
 import com.bank.domain.Account;
 import com.bank.domain.InsufficientFundsException;
 import com.bank.domain.TransferReceipt;
+import com.bank.domain.TransferRequest;
 import com.bank.repository.AccountRepository;
 import com.bank.service.TransferService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
@@ -19,18 +21,28 @@ public class VerifyTransferService implements TransferService {
 
     @Override
     public TransferReceipt transfer(double amount, String srcAcctNo, String destAcctNo, String remark) throws InsufficientFundsException, InvalidTransferWindow {
-        Account srcAccount = accountRepo.findByAccountNumber(srcAcctNo);
-        Account desAccount = accountRepo.findByAccountNumber(destAcctNo);
-        if (ObjectUtils.isEmpty(srcAccount)) {
+        Account srcAccount = null;
+        Account desAccount = null;
+        TransferReceipt transferReceipt = null;
+
+        try {
+            srcAccount = accountRepo.findByAccountNumber(srcAcctNo);
+        } catch(Exception ex) {
             throw new InvalidTransferWindow("Account " + srcAcctNo + " does not exist.");
-        } else if (ObjectUtils.isEmpty(desAccount)) {
+        }
+
+        try {
+            desAccount = accountRepo.findByAccountNumber(destAcctNo);
+        } catch (Exception ex) {
             throw new InvalidTransferWindow("Account " + destAcctNo + " does not exist.");
         }
+
+
         if (srcAccount.getBalance() < amount) {
             throw new InsufficientFundsException(srcAccount, amount);
         }
 
-        TransferReceipt transferReceipt = new TransferReceipt(LocalTime.now());
+        transferReceipt = new TransferReceipt(LocalTime.now());
         transferReceipt.setFeeAmount(0.00);
         transferReceipt.setTransferAmount(amount);
         transferReceipt.setInitialSourceAccount(srcAccount);
@@ -43,7 +55,6 @@ public class VerifyTransferService implements TransferService {
 
         desAccount.setBalance(desAccount.getBalance() + amount);
         transferReceipt.setFinalDestinationAccount(desAccount);
-
         persistAccount(transferReceipt);
 
         return transferReceipt;
@@ -57,5 +68,10 @@ public class VerifyTransferService implements TransferService {
     @Override
     public void setMinimumTransferAmount(double minimumTransferAmount) {
 
+    }
+
+    @Override
+    public TransferReceipt verify(TransferRequest transferRequest) throws InsufficientFundsException, InvalidTransferWindow {
+        return null;
     }
 }

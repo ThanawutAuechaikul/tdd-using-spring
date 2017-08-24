@@ -29,6 +29,7 @@ public class TransferReceipt {
     private Account finalDestinationAccountCopy;
     private LocalTime transactionTime;
     private String srcRemark;
+    private String eventId;
 
 
     public TransferReceipt(LocalTime transactionTime) {
@@ -83,17 +84,26 @@ public class TransferReceipt {
         this.srcRemark = srcRemark;
     }
 
+    public String getEventId() {
+        return eventId;
+    }
+
+    public void setEventId(String eventId) {
+        this.eventId = eventId;
+    }
+
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder().append(format("Transferred %.2f from account %s to %s, with fee amount: %.2f\n",
-                transferAmount, initialSourceAccountCopy.getId(),
-                initialDestinationAccountCopy.getId(), feeAmount)).append(format("\tinitial balance for account %s: %.2f; new balance: %.2f\n",
-                initialSourceAccountCopy.getId(),
-                initialSourceAccountCopy.getBalance(),
-                finalSourceAccountCopy.getBalance())).append(format("\tinitial balance for account %s: %.2f; new balance: %.2f\n",
-                initialDestinationAccountCopy.getId(),
-                initialDestinationAccountCopy.getBalance(),
-                finalDestinationAccountCopy.getBalance()));
-        return sb.toString();
+        return "TransferReceipt{" +
+                "transferAmount=" + transferAmount +
+                ", feeAmount=" + feeAmount +
+                ", initialSourceAccountCopy=" + initialSourceAccountCopy +
+                ", initialDestinationAccountCopy=" + initialDestinationAccountCopy +
+                ", finalSourceAccountCopy=" + finalSourceAccountCopy +
+                ", finalDestinationAccountCopy=" + finalDestinationAccountCopy +
+                ", transactionTime=" + transactionTime +
+                ", srcRemark='" + srcRemark + '\'' +
+                ", eventId='" + eventId + '\'' +
+                '}';
     }
 }

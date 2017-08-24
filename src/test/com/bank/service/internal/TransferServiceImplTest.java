@@ -17,15 +17,15 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 
 @RunWith(MockitoJUnitRunner.class)
-public class VerifyTransferServiceTest {
-
-    @Mock
-    private JdbcAccountRepository accountRepo;
+public class TransferServiceImplTest {
 
     @InjectMocks
     private TransferServiceImpl transferService;
 
-    @InjectMocks
+    @Mock
+    private JdbcAccountRepository accountRepo;
+
+    @Mock
     private DefaultTransactionService transactionService;
 
     private Account accountA;
@@ -58,12 +58,6 @@ public class VerifyTransferServiceTest {
     }
 
     @Test(expected = InvalidTransferWindow.class)
-    public void itShouldThrowInvalidTransferWindowIfAccountSrcNotExist() throws InsufficientFundsException, InvalidTransferWindow {
-        transferService.transfer(20.00, "1234567899", "1234567800", "Transfer 20B from A to B.");
-
-    }
-
-    @Test(expected = InvalidTransferWindow.class)
     public void itShouldThrowInvalidTransferWindowIfAccountDestNotExist() throws InsufficientFundsException, InvalidTransferWindow {
         transferService.transfer(20.00, "1234567890", "1234567811", "Transfer 20B from A to B.");
 
@@ -89,12 +83,8 @@ public class VerifyTransferServiceTest {
         assertEquals(remark, receipt.getSrcRemark());
     }
 
-    /*
     @Test
     public void testTransactionLogAfterTransferFinished() throws Exception {
-
-
-        doReturn(anyString()).when(transactionService).createTransferTransaction()
+        doReturn(anyString()).when(transactionService).createTransferTransaction(tr
     }
-    */
 }

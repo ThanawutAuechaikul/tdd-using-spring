@@ -20,7 +20,7 @@ public class TransferServiceImpl implements TransferService {
     @Autowired
     private AccountRepository accountRepo;
     @Autowired
-    private TransactionService transactionService;
+    private DefaultTransactionService transactionService;
 
     @Override
     public TransferReceipt transfer(double amount, String srcAcctNo, String destAcctNo, String remark) throws InsufficientFundsException, InvalidTransferWindow {
@@ -60,7 +60,8 @@ public class TransferServiceImpl implements TransferService {
         transferReceipt.setFinalDestinationAccount(desAccount);
         persistAccount(transferReceipt);
 
-        //transactionService.createTransferTransaction();
+        String eventId = transactionService.createTransferTransaction(transferReceipt);
+        transferReceipt.setEventId(eventId);
 
         return transferReceipt;
     }
@@ -81,12 +82,6 @@ public class TransferServiceImpl implements TransferService {
         Account desAccount = null;
         TransferReceipt transferReceipt = null;
         double amount = transferRequest.getAmount();
-
-        try {
-            srcAccount = accountRepo.findByAccountNumber(transferRequest.getSrcAccount());
-        } catch(Exception ex) {
-            throw new InvalidTransferWindow("Account " + transferRequest.getSrcAccount() + " does not exist.");
-        }
 
         try {
             desAccount = accountRepo.findByAccountNumber(transferRequest.getDestAccount());

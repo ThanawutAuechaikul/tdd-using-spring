@@ -7,10 +7,7 @@ import com.bank.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Date;
 
 @Service
@@ -20,12 +17,12 @@ public class DefaultTransactionService implements TransactionService {
 
     @Override
     public void createDefaultTransaction(String accountId, TransactionType transactionType, Double amount, Double balance, String remark) {
-        String eventId = getEventId();
+        String eventId = generateEventId();
 
         transactionRepository.insertTransaction(eventId, accountId, transactionType.name(), amount, balance, remark);
     }
 
-    public static String getEventId() {
+    public static String generateEventId() {
         SimpleDateFormat sdfDate = new SimpleDateFormat("yyyyMMddHHmmssSSS");//dd/MM/yyyy
         Date now = new Date();
         String strDate = sdfDate.format(now);
@@ -41,7 +38,7 @@ public class DefaultTransactionService implements TransactionService {
         Double balanceTo = receipt.getFinalDestinationAccount().getBalance();
         String remarkFrom = receipt.getSrcRemark();
 
-        String eventId = getEventId();
+        String eventId = generateEventId();
 
         transactionRepository.insertTransaction(eventId, fromAccountId, TransactionType.TRANSFER.name(), amount, balanceFrom, remarkFrom);
         transactionRepository.insertTransaction(eventId, toAccountId, TransactionType.DEPOSIT.name(), amount, balanceTo, "");

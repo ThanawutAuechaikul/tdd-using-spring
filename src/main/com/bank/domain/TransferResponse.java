@@ -2,6 +2,7 @@ package com.bank.domain;
 
 public class TransferResponse {
     private TransferReceipt transferReceipt;
+
     private String status;
     private String errorMessage;
 

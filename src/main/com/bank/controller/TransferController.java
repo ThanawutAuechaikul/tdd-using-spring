@@ -27,6 +27,10 @@ public class TransferController {
             TransferReceipt receipt = transferService.transfer(request.getAmount(), request.getSrcAccount(), request.getDestAccount(), request.getRemark());
             response.setStatus(Constant.SUCCESS);
             response.setTransferReceipt(receipt);
+
+
+
+
         } catch (Exception ex) {
             response.setStatus(Constant.FAILED);
             response.setErrorMessage(ex.getMessage());

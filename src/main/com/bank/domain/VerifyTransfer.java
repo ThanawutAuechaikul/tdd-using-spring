@@ -14,6 +14,7 @@ public class VerifyTransfer {
     private Account toAccount;
 
     private Account fromAccount;
+    private double balance;
 
     public String getFromRemark() {
         return fromRemark;
@@ -53,5 +54,13 @@ public class VerifyTransfer {
 
     public void setToAccount(Account toAccount) {
         this.toAccount = toAccount;
+    }
+
+    public void setBalance(double balance) {
+        this.balance = balance;
+    }
+
+    public double getBalance() {
+        return balance;
     }
 }

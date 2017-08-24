@@ -30,6 +30,7 @@ public class TransferReceipt {
     private LocalTime transactionTime;
     private String srcRemark;
     private String eventId;
+    private String desRemark;
 
 
     public TransferReceipt(LocalTime transactionTime) {
@@ -92,6 +93,14 @@ public class TransferReceipt {
         this.eventId = eventId;
     }
 
+    public String getDesRemark() {
+        return desRemark;
+    }
+
+    public void setDesRemark(String desRemark) {
+        this.desRemark = desRemark;
+    }
+
     @Override
     public String toString() {
         return "TransferReceipt{" +
@@ -104,6 +113,7 @@ public class TransferReceipt {
                 ", transactionTime=" + transactionTime +
                 ", srcRemark='" + srcRemark + '\'' +
                 ", eventId='" + eventId + '\'' +
+                ", desRemark='" + desRemark + '\'' +
                 '}';
     }
 }

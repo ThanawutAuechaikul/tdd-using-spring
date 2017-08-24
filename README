@@ -19,7 +19,7 @@ And the following will give you a list of all available tasks:
     >$ ./gradlew tasks
 
 If necessary, this 'Gradle wrapper' script will download a distribution of
-Gradle for you.
+Gradle for you.   
 
 Generate project metadata appropriate to your IDE with
 

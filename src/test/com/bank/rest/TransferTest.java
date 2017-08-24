@@ -1,7 +1,10 @@
 package com.bank.rest;
 
 import com.bank.controller.TransferController;
-import com.bank.domain.*;
+import com.bank.domain.Account;
+import com.bank.domain.TransferReceipt;
+import com.bank.domain.TransferRequest;
+import com.bank.domain.VerifyTransfer;
 import com.bank.dto.TransferDTO;
 import com.bank.service.TransferService;
 import org.junit.Before;
@@ -14,23 +17,20 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class TransferTest {
 
+    public static final String REMARK = "Hey, test transfer service!";
+    public static final String SRC_ACCOUNT = "4558874165";
+    public static final String DEST_ACCOUNT = "4558874856";
+    public static final double TRANSFER_AMOUNT = 20.00;
     private MockMvc mockMvc;
 
     @Mock
@@ -53,20 +53,30 @@ public class TransferTest {
     @Test
     public void itShouldReturnValidJsonWhenVerifySuccess() throws Exception {
 
-//        TransferReceipt receipt = new TransferReceipt(LocalTime.now());
-//        receipt.setTransferAmount(5.00);
-//        receipt.setFinalSourceAccount();
-//        receipt.setFinalDestinationAccount();
-//        receipt.setSrcRemark();
+        Account Account_1 = new Account("1", "123-456-789-1", "Clark Cent", 20.00);
+        Account Account_2 = new Account("2", "456-789-123-1", "Jane Cent", 20.00);
+
+        TransferReceipt receipt = new TransferReceipt(LocalTime.now());
+        receipt.setTransferAmount(TRANSFER_AMOUNT);
+        receipt.setFinalSourceAccount(Account_1);
+        receipt.setFinalDestinationAccount(Account_2);
+        receipt.setSrcRemark(REMARK);
 
         TransferRequest request = new TransferRequest();
-        request.setRemark("Hey, test transfer service!");
-        request.setSrcAccount("4558874165");
-        request.setDestAccount("4558874856");
-        request.setAmount(20.0);
+        request.setRemark(REMARK);
+        request.setSrcAccount(SRC_ACCOUNT);
+        request.setDestAccount(DEST_ACCOUNT);
+        request.setAmount(TRANSFER_AMOUNT);
 
-        when(transferService.verify(any(TransferRequest.class))).thenReturn(new TransferReceipt(LocalTime.now()));
-        when(dto.transform(any(TransferReceipt.class))).thenReturn(new VerifyTransfer());
+        VerifyTransfer verifyTransfer = new VerifyTransfer();
+        verifyTransfer.setFromRemark(REMARK);
+        verifyTransfer.setFromAccount(Account_1);
+        verifyTransfer.setToAccount(Account_2);
+        verifyTransfer.setAmount(TRANSFER_AMOUNT);
+        verifyTransfer.setBalance(Account_1.getBalance());
+
+        when(transferService.verify(request)).thenReturn(receipt);
+        when(dto.transform(receipt)).thenReturn(verifyTransfer);
 
         mockMvc.perform(
                 post("/verify").content("        {\n" +

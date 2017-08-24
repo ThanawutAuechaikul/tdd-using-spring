@@ -4,12 +4,13 @@ import java.util.Date;
 
 public class SearchTransactionCriteria {
 
-
     private String accountId;
     private Date fromDate;
     private Date toDate;
     private Integer offset;
     private Integer limit;
+    private String orderBy = "TRANSACTION_DATE";
+    private String direction = "DESC";
 
     public String getAccountId() {
         return accountId;
@@ -49,5 +50,21 @@ public class SearchTransactionCriteria {
 
     public void setLimit(Integer limit) {
         this.limit = limit;
+    }
+
+    public String getOrderBy() {
+        return orderBy;
+    }
+
+    public void setOrderBy(String orderBy) {
+        this.orderBy = orderBy;
+    }
+
+    public String getDirection() {
+        return direction;
+    }
+
+    public void setDirection(String direction) {
+        this.direction = direction;
     }
 }

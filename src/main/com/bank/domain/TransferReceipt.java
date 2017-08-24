@@ -28,6 +28,7 @@ public class TransferReceipt {
     private Account finalSourceAccountCopy;
     private Account finalDestinationAccountCopy;
     private LocalTime transactionTime;
+    private String srcRemark;
 
 
     public TransferReceipt(LocalTime transactionTime) {
@@ -72,6 +73,14 @@ public class TransferReceipt {
 
     public Account getFinalDestinationAccount() {
         return finalDestinationAccountCopy;
+    }
+
+    public String getSrcRemark() {
+        return srcRemark;
+    }
+
+    public void setSrcRemark(String srcRemark) {
+        this.srcRemark = srcRemark;
     }
 
     @Override

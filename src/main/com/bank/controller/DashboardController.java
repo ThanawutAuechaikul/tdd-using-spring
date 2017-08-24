@@ -15,22 +15,25 @@ import javax.sql.DataSource;
 import java.util.List;
 
 @RestController
+@CrossOrigin
 public class DashboardController {
 
     @Autowired
     private DashboardService dashboardService;
 
-
-    @CrossOrigin
     @RequestMapping(value = "/dashboard/piechart/{accountId}", method = {RequestMethod.GET}, produces = "application/json")
     public @ResponseBody TransactionSummaryResult getPieChartData(@PathVariable String accountId) {
         return dashboardService.getPiechartData(accountId);
     }
 
-    @CrossOrigin
     @RequestMapping(value = "/dashboard/transaction/{accountId}", method = {RequestMethod.GET}, produces = "application/json")
     public @ResponseBody TransactionHistoryResult getTransactionHistory(@PathVariable String accountId, @RequestParam("offset") int offset, @RequestParam("limit") int limit){
         return dashboardService.getTransactionHistory(accountId,offset,limit);
+    }
+
+    @RequestMapping(value = "/dashboard/transaction/count/{accountId}", method = {RequestMethod.GET}, produces = "application/json")
+    public @ResponseBody Integer getCountTotalTransactions(@PathVariable String accountId ){
+        return dashboardService.getCountTotalTransactions(accountId);
     }
 
 }

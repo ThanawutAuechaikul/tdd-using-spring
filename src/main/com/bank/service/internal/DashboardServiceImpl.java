@@ -1,11 +1,8 @@
 package com.bank.service.internal;
 
-import com.bank.domain.TransactionHistory;
-import com.bank.domain.TransactionType;
 import com.bank.model.SearchTransactionCriteria;
 import com.bank.model.TransactionHistoryResult;
 import com.bank.model.TransactionSummaryResult;
-import com.bank.repository.TransactionHistoryRepository;
 import com.bank.repository.internal.TransactionRepository;
 import com.bank.service.DashboardService;
 import com.bank.utils.DateUtil;
@@ -13,15 +10,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.sql.DataSource;
-import java.time.LocalDateTime;
 import java.util.Date;
-import java.util.List;
 
 @Service
 public class DashboardServiceImpl implements DashboardService {
 
     @Autowired
-    private DataSource dataSource;
+    private TransactionRepository transactionRepository;
 
     @Override
     public SearchTransactionCriteria getDashboardSearchCriteria(String accountId) {
@@ -42,7 +37,7 @@ public class DashboardServiceImpl implements DashboardService {
     @Override
     public TransactionSummaryResult getPiechartData(String accountId) {
         SearchTransactionCriteria criteria = getDashboardSearchCriteria(accountId);
-        TransactionRepository transactionRepository = new TransactionRepository(dataSource);
+
         return transactionRepository.getSummaryAmountGroupByType( criteria );
     }
 
@@ -50,9 +45,14 @@ public class DashboardServiceImpl implements DashboardService {
     public TransactionHistoryResult getTransactionHistory(String accountId, int offset, int limit) {
         SearchTransactionCriteria criteria = getDashboardSearchCriteria(accountId, offset, limit);
         TransactionHistoryResult result = new TransactionHistoryResult();
-        TransactionRepository transactionRepository = new TransactionRepository(dataSource);
         result.setTotal(transactionRepository.getTotalTransactionHistoryByAccountId(criteria));
         result.setTransactionHistories(transactionRepository.getTransactionHistory(criteria));
         return result;
+    }
+
+    @Override
+    public Integer getCountTotalTransactions(String accountId) {
+        SearchTransactionCriteria criteria = getDashboardSearchCriteria( accountId );
+        return transactionRepository.getTotalTransactionHistoryByAccountId(criteria);
     }
 }

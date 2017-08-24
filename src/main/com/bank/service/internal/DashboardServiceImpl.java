@@ -16,7 +16,7 @@ import java.util.Date;
 public class DashboardServiceImpl implements DashboardService {
 
     @Autowired
-    private DataSource dataSource;
+    private TransactionRepository transactionRepository;
 
     @Override
     public SearchTransactionCriteria getDashboardSearchCriteria(String accountId) {
@@ -37,7 +37,7 @@ public class DashboardServiceImpl implements DashboardService {
     @Override
     public TransactionSummaryResult getPiechartData(String accountId) {
         SearchTransactionCriteria criteria = getDashboardSearchCriteria(accountId);
-        TransactionRepository transactionRepository = new TransactionRepository(dataSource);
+
         return transactionRepository.getSummaryAmountGroupByType( criteria );
     }
 
@@ -45,7 +45,6 @@ public class DashboardServiceImpl implements DashboardService {
     public TransactionHistoryResult getTransactionHistory(String accountId, int offset, int limit) {
         SearchTransactionCriteria criteria = getDashboardSearchCriteria(accountId, offset, limit);
         TransactionHistoryResult result = new TransactionHistoryResult();
-        TransactionRepository transactionRepository = new TransactionRepository(dataSource);
         result.setTotal(transactionRepository.getTotalTransactionHistoryByAccountId(criteria));
         result.setTransactionHistories(transactionRepository.getTransactionHistory(criteria));
         return result;
@@ -54,7 +53,6 @@ public class DashboardServiceImpl implements DashboardService {
     @Override
     public Integer getCountTotalTransactions(String accountId) {
         SearchTransactionCriteria criteria = getDashboardSearchCriteria( accountId );
-        TransactionRepository transactionRepository = new TransactionRepository(dataSource);
         return transactionRepository.getTotalTransactionHistoryByAccountId(criteria);
     }
 }

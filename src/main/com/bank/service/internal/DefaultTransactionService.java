@@ -1,6 +1,7 @@
 package com.bank.service.internal;
 
 import com.bank.domain.TransactionType;
+import com.bank.domain.TransferReceipt;
 import com.bank.repository.internal.TransactionRepository;
 import com.bank.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +33,14 @@ public class DefaultTransactionService implements TransactionService {
     }
 
     @Override
-    public String createTransferTransaction(String fromAccountId, String toAccountId, Double amount, Double balanceFrom, Double balanceTo, String remarkFrom) {
+    public String createTransferTransaction(TransferReceipt receipt) {
+        String fromAccountId = receipt.getFinalSourceAccount().getId();
+        String toAccountId = receipt.getFinalDestinationAccount().getId();
+        Double amount = receipt.getTransferAmount();
+        Double balanceFrom = receipt.getFinalSourceAccount().getBalance();
+        Double balanceTo = receipt.getFinalDestinationAccount().getBalance();
+        String remarkFrom = receipt.getSrcRemark();
+
         String eventId = getEventId();
 
         transactionRepository.insertTransaction(eventId, fromAccountId, TransactionType.TRANSFER.name(), amount, balanceFrom, remarkFrom);

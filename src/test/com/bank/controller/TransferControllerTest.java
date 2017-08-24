@@ -10,6 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.time.LocalTime;
 
 import static org.mockito.Matchers.anyDouble;
+import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
@@ -31,6 +33,8 @@ public class TransferControllerTest {
 
     @Mock
     private TransferService transferService;
+    @Mock
+    private TransferRequest transferRequest;
 
     @InjectMocks
     private TransferController controller;
@@ -50,11 +54,19 @@ public class TransferControllerTest {
     }
 
     @Test
-    public void verifyTransfer() throws InsufficientFundsException, InvalidTransferWindow {
+    public void testTransfer() throws InsufficientFundsException, InvalidTransferWindow {
         doReturn(new TransferReceipt(LocalTime.now())).when(transferService).transfer(anyDouble(), anyString(), anyString(), anyString());
 
         controller.transfer(request);
         verify(transferService).transfer(request.getAmount(), request.getSrcAccount(), request.getDestAccount(), request.getRemark());
+    }
+
+    @Test
+    public void testVerify() throws InsufficientFundsException, InvalidTransferWindow {
+        doReturn(new TransferReceipt(LocalTime.now())).when(transferService).verify(transferRequest);
+
+        controller.verify(transferRequest);
+        verify(transferService).verify(transferRequest);
     }
 
 }

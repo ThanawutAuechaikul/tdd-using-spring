@@ -18,6 +18,7 @@ import java.sql.Date;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 import static com.bank.repository.internal.SimpleAccountRepository.Data.*;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -32,32 +33,60 @@ public class DefaultTransactionServiceTest {
     @InjectMocks
     private DefaultTransactionService transactionService;
 
+    private TransferReceipt receipt;
+
+    Double trasnsferAmount;
+    String remarkFrom;
+
+    String fromAccountId;
+    String fromAccountNumber;
+    String fromName;
+    Double fromBalance;
+
+    String toAccountId;
+    String toAccountNumber;
+    String toName;
+    Double toBalance;
+
+    Account srcAccount;
+    Account destAccount;
+
+    @Before
+    public void setUp() {
+        trasnsferAmount = 400.00;
+        remarkFrom = "Transfer";
+
+        fromAccountId = "1";
+        fromAccountNumber = "1234567890";
+        fromName = "John Smith";
+        fromBalance = 2000.00;
+
+        toAccountId = "2";
+        toAccountNumber = "1234567800";
+        toName = "Tom Smith";
+        toBalance = 1000.00;
+
+        receipt = new TransferReceipt(LocalTime.now());
+        srcAccount = new Account(fromAccountId, fromAccountNumber, fromName, fromBalance);
+        destAccount = new Account(toAccountId, toAccountNumber, toName, toBalance);
+        receipt.setFinalSourceAccount(srcAccount);
+        receipt.setFinalDestinationAccount(destAccount);
+        receipt.setTransferAmount(trasnsferAmount);
+        receipt.setSrcRemark(remarkFrom);
+    }
+
     @Test
     public void testCreateDefaultTransaction() {
-         String accountId = "1";
-         TransactionType transactionType = TransactionType.TRANSFER;
-         Double amount = 500.00;
-         Double balance = 2000.00;
-         String remark = "transfer 500 THB to A123";
-
-        transactionService.createDefaultTransaction(accountId, transactionType, amount, balance, remark);
-        verify(transactionRepository).insertTransaction(isA(String.class), eq(accountId), eq(transactionType.name()), eq(amount), eq(balance), eq(remark));
+        transactionService.createDefaultTransaction(fromAccountId, TransactionType.WITHDRAW, trasnsferAmount, fromBalance, remarkFrom);
+        verify(transactionRepository).insertTransaction(anyString(), eq(fromAccountId), eq(TransactionType.WITHDRAW.name()), eq(trasnsferAmount), eq(fromBalance), eq(remarkFrom));
     }
 
     @Test
     public void testCreateTransferTransaction() {
-        String fromAccountId = "1";
-        String toAccountId = "2";
-        TransactionType transactionType = TransactionType.TRANSFER;
-        Double amount = 400.00;
-        Double balanceFrom = 2000.00;
-        Double balanceTo = 3000.00;
-        String remarkFrom = "transfer 400 THB to A123";
-
-        transactionService.createTransferTransaction(fromAccountId, toAccountId, amount, balanceFrom, balanceTo, remarkFrom);
-        verify(transactionRepository).insertTransaction(isA(String.class), eq(fromAccountId), eq(TransactionType.TRANSFER.name()), eq(amount), eq(balanceFrom), eq(remarkFrom));
-        verify(transactionRepository).insertTransaction(isA(String.class), eq(toAccountId), eq(TransactionType.DEPOSIT.name()), eq(amount), eq(balanceTo), eq(""));
-        verify(transactionRepository).insertTransaction(isA(String.class), eq(fromAccountId), eq(TransactionType.WITHDRAW.name()), eq(amount), eq(balanceFrom), eq("Transfer Fee"));
+        transactionService.createTransferTransaction(receipt);
+        verify(transactionRepository).insertTransaction(anyString(), eq(fromAccountId), eq(TransactionType.TRANSFER.name()), eq(trasnsferAmount), eq(fromBalance), eq(remarkFrom));
+        verify(transactionRepository).insertTransaction(anyString(), eq(toAccountId), eq(TransactionType.DEPOSIT.name()), eq(trasnsferAmount), eq(toBalance), anyString());
+        verify(transactionRepository).insertTransaction(anyString(), eq(fromAccountId), eq(TransactionType.WITHDRAW.name()), eq(trasnsferAmount), eq(fromBalance), anyString());
     }
 
     @Test

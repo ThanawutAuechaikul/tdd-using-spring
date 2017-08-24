@@ -26,7 +26,7 @@ public interface AccountRepository {
 
     void updateBalance(Account dstAcct);
 
-    Account findByAccountNumber(String srcAcctNo);
+    Account findByAccountNumber(String srcAcctNo) throws Exception;
 
     List<Account> findAllAccountsByUserId(String userId);
 

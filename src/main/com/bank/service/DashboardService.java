@@ -16,6 +16,6 @@ public interface DashboardService {
 
     TransactionHistoryResult getTransactionHistory(String accountId, int offset, int limit);
 
-
+    Integer getCountTotalTransactions(String accountId);
 
 }

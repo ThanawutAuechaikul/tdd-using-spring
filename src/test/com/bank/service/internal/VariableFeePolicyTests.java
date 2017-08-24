@@ -7,6 +7,8 @@ import org.junit.Test;
 
 import com.bank.service.internal.VariableFeePolicy;
 
+
+
 public class VariableFeePolicyTests {
 
     @Test

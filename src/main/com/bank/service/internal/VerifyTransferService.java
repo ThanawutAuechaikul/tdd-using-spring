@@ -5,6 +5,7 @@ import com.bank.domain.InsufficientFundsException;
 import com.bank.domain.TransferReceipt;
 import com.bank.domain.TransferRequest;
 import com.bank.repository.AccountRepository;
+import com.bank.service.TransactionService;
 import com.bank.service.TransferService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -18,6 +19,8 @@ public class VerifyTransferService implements TransferService {
 
     @Autowired
     private AccountRepository accountRepo;
+    @Autowired
+    private TransactionService transactionService;
 
     @Override
     public TransferReceipt transfer(double amount, String srcAcctNo, String destAcctNo, String remark) throws InsufficientFundsException, InvalidTransferWindow {
@@ -56,6 +59,8 @@ public class VerifyTransferService implements TransferService {
         desAccount.setBalance(desAccount.getBalance() + amount);
         transferReceipt.setFinalDestinationAccount(desAccount);
         persistAccount(transferReceipt);
+
+        //transactionService.createTransferTransaction();
 
         return transferReceipt;
     }

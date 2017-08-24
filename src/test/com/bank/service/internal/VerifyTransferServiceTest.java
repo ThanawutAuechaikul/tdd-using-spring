@@ -4,6 +4,7 @@ import com.bank.domain.Account;
 import com.bank.domain.InsufficientFundsException;
 import com.bank.domain.TransferReceipt;
 import com.bank.repository.internal.JdbcAccountRepository;
+import com.bank.service.TransactionService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,6 +15,7 @@ import org.springframework.dao.DataAccessException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
@@ -26,6 +28,9 @@ public class VerifyTransferServiceTest {
 
     @InjectMocks
     private VerifyTransferService transferService;
+
+    @InjectMocks
+    private DefaultTransactionService transactionService;
 
     private Account accountA;
     private Account accountB;
@@ -87,4 +92,13 @@ public class VerifyTransferServiceTest {
         assertTrue(amount == receipt.getFinalDestinationAccount().getBalance() - amountBBefore);
         assertEquals(remark, receipt.getSrcRemark());
     }
+
+    /*
+    @Test
+    public void testTransactionLogAfterTransferFinished() throws Exception {
+
+
+        doReturn(anyString()).when(transactionService).createTransferTransaction()
+    }
+    */
 }

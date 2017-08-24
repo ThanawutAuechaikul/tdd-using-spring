@@ -25,12 +25,12 @@ public class AccountController {
     @Autowired
     AccountService accountService;
 
-    @RequestMapping(value = "/getAccountListByUserId/{userId}", method = {RequestMethod.GET}, produces = "application/json")
+    @RequestMapping(value = "user/{userId}/accounts", method = {RequestMethod.GET}, produces = "application/json")
     public @ResponseBody List<Account> getAccountListByUserId(@PathVariable String userId) {
         return accountService.findAllAccountsByUserId(userId);
     }
 
-    @RequestMapping(value = "accountSummary/accountId/{accountId}", method = {RequestMethod.GET}, produces = "application/json")
+    @RequestMapping(value = "account/summary/{accountId}", method = {RequestMethod.GET}, produces = "application/json")
     public @ResponseBody AccountSummary getAccountSummary(@PathVariable String accountId) {
         AccountRepository accountRep = new JdbcAccountRepository(dataSource);
         return accountRep.getAccountSummaryByAccountId(accountId);

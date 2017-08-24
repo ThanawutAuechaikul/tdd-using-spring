@@ -17,6 +17,7 @@ package com.bank.service;
 
 import com.bank.domain.InsufficientFundsException;
 import com.bank.domain.TransferReceipt;
+import com.bank.domain.TransferRequest;
 import com.bank.service.internal.InvalidTransferWindow;
 
 public interface TransferService {
@@ -25,5 +26,8 @@ public interface TransferService {
             throws InsufficientFundsException, InvalidTransferWindow;
 
     void setMinimumTransferAmount(double minimumTransferAmount);
+
+    TransferReceipt verify(TransferRequest transferRequest)
+            throws InsufficientFundsException, InvalidTransferWindow;
 
 }

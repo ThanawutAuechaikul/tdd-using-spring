@@ -29,6 +29,7 @@ public class TransferReceipt {
     private Account finalDestinationAccountCopy;
     private LocalTime transactionTime;
     private String srcRemark;
+    private String desRemark;
 
 
     public TransferReceipt(LocalTime transactionTime) {
@@ -95,5 +96,13 @@ public class TransferReceipt {
                 initialDestinationAccountCopy.getBalance(),
                 finalDestinationAccountCopy.getBalance()));
         return sb.toString();
+    }
+
+    public String getDesRemark() {
+        return desRemark;
+    }
+
+    public void setDesRemark(String desRemark) {
+        this.desRemark = desRemark;
     }
 }

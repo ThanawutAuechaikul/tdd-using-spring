@@ -24,7 +24,7 @@ public class TransferController {
         try {
             TransferReceipt receipt = transferService.transfer(request.getAmount(), request.getSrcAccount(), request.getDestAccount(), request.getRemark());
             response.setStatus(Constant.SUCCESS);
-            response.setTransferReceipt(receipt);
+            response.setTransferSummary(receipt);
         } catch (Exception ex) {
             response.setStatus(Constant.FAILED);
             response.setErrorMessage(ex.getMessage());
@@ -39,7 +39,7 @@ public class TransferController {
         try {
             TransferReceipt receipt = transferService.verify(request);
             response.setStatus(Constant.SUCCESS);
-            response.setTransferReceipt(receipt);
+            response.setTransferSummary(receipt);
         } catch (Exception ex) {
             response.setStatus(Constant.FAILED);
             response.setErrorMessage(ex.getMessage());

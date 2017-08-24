@@ -55,6 +55,11 @@ public class DefaultTransferService implements TransferService {
     }
 
     @Override
+    public void complete(String eventId, String remarkTo) {
+
+    }
+
+    @Override
     @Transactional
     public TransferReceipt transfer(double amount, String srcAcctId, String dstAcctId, String remark)
             throws InsufficientFundsException, InvalidTransferWindow {

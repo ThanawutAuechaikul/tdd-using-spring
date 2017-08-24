@@ -1,8 +1,6 @@
 package com.bank.domain;
 
 public class TransferResponse {
-    private TransferReceipt transferReceipt;
-
     private VerifyTransfer transferSummary;
     private String status;
     private String errorMessage;

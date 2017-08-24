@@ -4,6 +4,7 @@ import com.bank.domain.Account;
 import com.bank.domain.InsufficientFundsException;
 import com.bank.domain.TransferReceipt;
 import com.bank.repository.internal.JdbcAccountRepository;
+import com.bank.repository.internal.TransactionRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,6 +32,9 @@ public class TransferServiceImplTest {
 
     @Mock
     private DefaultTransactionService transactionService;
+
+    @Mock
+    private TransactionRepository transactionRepository;
 
     private Account accountA;
     private Account accountB;
@@ -93,6 +97,12 @@ public class TransferServiceImplTest {
     public void testTransactionLogAfterTransferFinished() throws Exception {
         TransferReceipt transferReceipt = transferService.transfer(1, "1234567890", "1234567800", "Transfer 1000B from A to B.");
         verify(transactionService).createTransferTransaction(transferReceipt);
+    }
+
+    @Test
+    public void testCompleteTRansfer() throws Exception {
+        transferService.complete("1234567890", "Transfer already");
+        verify(transactionRepository).updateTransferRemark(anyString(), anyString());
     }
 
 }

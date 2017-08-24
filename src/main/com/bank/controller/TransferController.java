@@ -3,6 +3,7 @@ package com.bank.controller;
 import com.bank.com.bank.constant.Constant;
 import com.bank.domain.*;
 import com.bank.dto.TransferDTO;
+import com.bank.service.TransactionService;
 import com.bank.service.TransferService;
 import com.bank.service.internal.InvalidTransferWindow;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +46,14 @@ public class TransferController {
             response.setStatus(Constant.FAILED);
             response.setErrorMessage(ex.getMessage());
         }
+        return response;
+    }
+
+    @RequestMapping(value = "/complete", method = RequestMethod.POST, produces = "application/json")
+    public TransferResponse complete(@RequestBody String eventId, String remarkTo) {
+        transferService.complete(eventId, remarkTo);
+        TransferResponse response = new TransferResponse();
+        response.setStatus(Constant.SUCCESS);
         return response;
     }
 }

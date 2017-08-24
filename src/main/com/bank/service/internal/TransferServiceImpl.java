@@ -5,6 +5,7 @@ import com.bank.domain.InsufficientFundsException;
 import com.bank.domain.TransferReceipt;
 import com.bank.domain.TransferRequest;
 import com.bank.repository.AccountRepository;
+import com.bank.repository.internal.TransactionRepository;
 import com.bank.service.TransactionService;
 import com.bank.service.TransferService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,8 @@ public class TransferServiceImpl implements TransferService {
 
     @Autowired
     private AccountRepository accountRepo;
+    @Autowired
+    private TransactionRepository transactionRepository;
     @Autowired
     private DefaultTransactionService transactionService;
 
@@ -84,6 +87,12 @@ public class TransferServiceImpl implements TransferService {
         double amount = transferRequest.getAmount();
 
         try {
+            srcAccount = accountRepo.findByAccountNumber(transferRequest.getSrcAccount());
+        } catch (Exception ex) {
+            throw new InvalidTransferWindow("Account " + transferRequest.getSrcAccount() + " does not exist.");
+        }
+
+        try {
             desAccount = accountRepo.findByAccountNumber(transferRequest.getDestAccount());
         } catch (Exception ex) {
             throw new InvalidTransferWindow("Account " + transferRequest.getDestAccount() + " does not exist.");
@@ -109,5 +118,9 @@ public class TransferServiceImpl implements TransferService {
         transferReceipt.setFinalDestinationAccount(desAccount);
 
         return transferReceipt;
+    }
+
+    public void complete(String eventId, String remarkTo) {
+        transactionRepository.updateTransferRemark(eventId, remarkTo);
     }
 }

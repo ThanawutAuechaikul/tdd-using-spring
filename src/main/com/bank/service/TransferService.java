@@ -30,4 +30,5 @@ public interface TransferService {
     TransferReceipt verify(TransferRequest transferRequest)
             throws InsufficientFundsException, InvalidTransferWindow;
 
+    public void complete(String eventId, String remarkTo);
 }

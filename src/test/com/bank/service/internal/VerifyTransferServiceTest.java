@@ -10,10 +10,13 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.dao.DataAccessException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
 
 @RunWith(MockitoJUnitRunner.class)
 public class VerifyTransferServiceTest {
@@ -28,14 +31,15 @@ public class VerifyTransferServiceTest {
     private Account accountB;
 
     @Before
-    public void setUp() {
+    public void setUp() throws Exception {
         accountA = new Account("1", "1234567890", "John Smith1", 500.00);
         accountB = new Account("2", "1234567800", "John Smith2", 1000.00);
-
+        
         doReturn(accountA).when(accountRepo).findByAccountNumber("1234567890");
         doReturn(accountB).when(accountRepo).findByAccountNumber("1234567800");
-        doReturn(null).when(accountRepo).findByAccountNumber("1234567899");
-        doReturn(null).when(accountRepo).findByAccountNumber("1234567811");
+
+        doThrow(new Exception()).when(accountRepo).findByAccountNumber("1234567899");
+        doThrow(new Exception()).when(accountRepo).findByAccountNumber("1234567811");
     }
 
     @Test

@@ -37,12 +37,13 @@ public class DefaultTransactionService implements TransactionService {
         Double balanceFrom = receipt.getFinalSourceAccount().getBalance();
         Double balanceTo = receipt.getFinalDestinationAccount().getBalance();
         String remarkFrom = receipt.getSrcRemark();
+        Double fee = receipt.getFeeAmount();
 
         String eventId = generateEventId();
 
         transactionRepository.insertTransaction(eventId, fromAccountId, TransactionType.TRANSFER.name(), amount, balanceFrom, remarkFrom);
         transactionRepository.insertTransaction(eventId, toAccountId, TransactionType.DEPOSIT.name(), amount, balanceTo, "");
-        transactionRepository.insertTransaction(eventId, fromAccountId, TransactionType.WITHDRAW.name(), amount, balanceFrom, "Transfer Fee");
+        transactionRepository.insertTransaction(eventId, fromAccountId, TransactionType.WITHDRAW.name(), fee, balanceFrom, "Transfer Fee");
 
         return eventId;
     }

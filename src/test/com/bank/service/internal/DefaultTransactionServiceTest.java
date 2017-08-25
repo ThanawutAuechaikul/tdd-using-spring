@@ -37,6 +37,7 @@ public class DefaultTransactionServiceTest {
 
     Double trasnsferAmount;
     String remarkFrom;
+    Double fee;
 
     String fromAccountId;
     String fromAccountNumber;
@@ -55,6 +56,7 @@ public class DefaultTransactionServiceTest {
     public void setUp() {
         trasnsferAmount = 400.00;
         remarkFrom = "Transfer";
+        fee = 0.00;
 
         fromAccountId = "1";
         fromAccountNumber = "1234567890";
@@ -73,6 +75,7 @@ public class DefaultTransactionServiceTest {
         receipt.setFinalDestinationAccount(destAccount);
         receipt.setTransferAmount(trasnsferAmount);
         receipt.setSrcRemark(remarkFrom);
+        receipt.setFeeAmount(fee);
     }
 
     @Test
@@ -86,7 +89,7 @@ public class DefaultTransactionServiceTest {
         transactionService.createTransferTransaction(receipt);
         verify(transactionRepository).insertTransaction(anyString(), eq(fromAccountId), eq(TransactionType.TRANSFER.name()), eq(trasnsferAmount), eq(fromBalance), eq(remarkFrom));
         verify(transactionRepository).insertTransaction(anyString(), eq(toAccountId), eq(TransactionType.DEPOSIT.name()), eq(trasnsferAmount), eq(toBalance), anyString());
-        verify(transactionRepository).insertTransaction(anyString(), eq(fromAccountId), eq(TransactionType.WITHDRAW.name()), eq(trasnsferAmount), eq(fromBalance), anyString());
+        verify(transactionRepository).insertTransaction(anyString(), eq(fromAccountId), eq(TransactionType.WITHDRAW.name()), eq(fee), eq(fromBalance), anyString());
     }
 
     @Test

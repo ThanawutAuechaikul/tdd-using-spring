@@ -39,7 +39,7 @@ public class IntegrationTests {
         AccountRepository accountRepository = new SimpleAccountRepository();
         FeePolicy feePolicy = new ZeroFeePolicy();
         LocalTimeWrapper localTimeWrapper = new LocalTimeWrapper();
-        DefaultTransferWindow defaultTransferWindow = new DefaultTransferWindow("06:00:00", "22:00:00");
+        DefaultTransferWindow defaultTransferWindow = new DefaultTransferWindow("00:00:00", "23:59:59");
 
 
         TransferService transferService = new DefaultTransferService(accountRepository, feePolicy, localTimeWrapper, defaultTransferWindow);

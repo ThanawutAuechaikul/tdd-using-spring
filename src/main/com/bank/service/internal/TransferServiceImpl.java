@@ -31,22 +31,9 @@ public class TransferServiceImpl implements TransferService {
         Account desAccount = null;
         TransferReceipt transferReceipt = null;
 
-        try {
-            srcAccount = accountRepo.findByAccountNumber(srcAcctNo);
-        } catch(Exception ex) {
-            throw new InvalidTransferWindow("Account " + srcAcctNo + " does not exist.");
-        }
-
-        try {
-            desAccount = accountRepo.findByAccountNumber(destAcctNo);
-        } catch (Exception ex) {
-            throw new InvalidTransferWindow("Account " + destAcctNo + " does not exist.");
-        }
-
-
-        if (srcAccount.getBalance() < amount) {
-            throw new InsufficientFundsException(srcAccount, amount);
-        }
+        srcAccount = getAccount(srcAcctNo);
+        desAccount = getAccount(destAcctNo);
+        checkSourceBalanceEnough(amount, srcAccount);
 
         transferReceipt = new TransferReceipt(LocalTime.now());
         transferReceipt.setFeeAmount(0.00);
@@ -69,6 +56,12 @@ public class TransferServiceImpl implements TransferService {
         return transferReceipt;
     }
 
+    private void checkSourceBalanceEnough(double amount, Account srcAccount) throws InsufficientFundsException {
+        if (srcAccount.getBalance() < amount) {
+            throw new InsufficientFundsException(srcAccount, amount);
+        }
+    }
+
     private void persistAccount(TransferReceipt transferReceipt) {
         accountRepo.updateBalance(transferReceipt.getFinalSourceAccount());
         accountRepo.updateBalance(transferReceipt.getFinalDestinationAccount());
@@ -86,22 +79,10 @@ public class TransferServiceImpl implements TransferService {
         TransferReceipt transferReceipt = null;
         double amount = transferRequest.getAmount();
 
-        try {
-            srcAccount = accountRepo.findByAccountNumber(transferRequest.getSrcAccount());
-        } catch (Exception ex) {
-            throw new InvalidTransferWindow("Account " + transferRequest.getSrcAccount() + " does not exist.");
-        }
+        srcAccount = getAccount(transferRequest.getSrcAccount());
+        desAccount = getAccount(transferRequest.getDestAccount());
 
-        try {
-            desAccount = accountRepo.findByAccountNumber(transferRequest.getDestAccount());
-        } catch (Exception ex) {
-            throw new InvalidTransferWindow("Account " + transferRequest.getDestAccount() + " does not exist.");
-        }
-
-
-        if (srcAccount.getBalance() < amount) {
-            throw new InsufficientFundsException(srcAccount, amount);
-        }
+        checkSourceBalanceEnough(amount, srcAccount);
 
         transferReceipt = new TransferReceipt(LocalTime.now());
         transferReceipt.setFeeAmount(0.00);
@@ -118,6 +99,16 @@ public class TransferServiceImpl implements TransferService {
         transferReceipt.setFinalDestinationAccount(desAccount);
 
         return transferReceipt;
+    }
+
+    private Account getAccount(String accountNumber) throws InvalidTransferWindow {
+        Account account;
+        try {
+            account = accountRepo.findByAccountNumber(accountNumber);
+        } catch (Exception ex) {
+            throw new InvalidTransferWindow("Account " + accountNumber + " does not exist.");
+        }
+        return account;
     }
 
     public void complete(String eventId, String remarkTo) {

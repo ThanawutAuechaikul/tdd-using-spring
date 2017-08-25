@@ -18,18 +18,20 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.time.LocalTime;
 
+import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class TransferTest {
 
     public static final String REMARK = "Hey, test transfer service!";
-    public static final String SRC_ACCOUNT = "4558874165";
-    public static final String DEST_ACCOUNT = "4558874856";
+    public static final String SRC_ACCOUNT = "1234567891";
+    public static final String DEST_ACCOUNT = "4567891231";
     public static final double TRANSFER_AMOUNT = 20.00;
     private MockMvc mockMvc;
 
@@ -53,8 +55,8 @@ public class TransferTest {
     @Test
     public void itShouldReturnValidJsonWhenVerifySuccess() throws Exception {
 
-        Account Account_1 = new Account("1", "123-456-789-1", "Clark Cent", 20.00);
-        Account Account_2 = new Account("2", "456-789-123-1", "Jane Cent", 20.00);
+        Account Account_1 = new Account("1", "1234567891", "Clark Cent", 20.00);
+        Account Account_2 = new Account("2", "4567891231", "Jane Cent", 20.00);
 
         TransferReceipt receipt = new TransferReceipt(LocalTime.now());
         receipt.setTransferAmount(TRANSFER_AMOUNT);
@@ -80,13 +82,17 @@ public class TransferTest {
 
         mockMvc.perform(
                 post("/verify").content("        {\n" +
-                        "            \"srcAccount\": \"4558874165\",\n" +
-                        "                \"destAccount\": \"4558874856\",\n" +
+                        "            \"srcAccount\": \"1234567891\",\n" +
+                        "                \"destAccount\": \"4567891231\",\n" +
                         "                \"amount\": 20.00,\n" +
                         "                \"remark\": \"Hey, test transfer service!\"\n" +
                         "        }").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE));
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(jsonPath("$.transferSummary.fromRemark", equalTo(request.getRemark())))
+                .andExpect(jsonPath("$.transferSummary.amount", equalTo(request.getAmount())))
+                .andExpect(jsonPath("$.transferSummary.fromAccount.accountNumber", equalTo(request.getSrcAccount())))
+                .andExpect(jsonPath("$.transferSummary.toAccount.accountNumber", equalTo(request.getDestAccount())));
 
         verify(transferService).verify(eq(request));
 

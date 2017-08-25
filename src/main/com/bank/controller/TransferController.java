@@ -49,8 +49,8 @@ public class TransferController {
     }
 
     @RequestMapping(value = "/complete", method = RequestMethod.POST, produces = "application/json")
-    public TransferResponse complete(@RequestBody String eventId, String remarkTo) {
-        transferService.complete(eventId, remarkTo);
+    public TransferResponse complete(@RequestBody CompleteRequest request) {
+        transferService.complete(request.getEventId(), request.getRemarkTo());
         TransferResponse response = new TransferResponse();
         response.setStatus(Constant.SUCCESS);
         return response;

@@ -28,7 +28,7 @@ public class DefaultTransferServiceTests {
         accountRepository = new SimpleAccountRepository();
         FeePolicy feePolicy = new ZeroFeePolicy();
         LocalTimeWrapper localTimeWrapper = new LocalTimeWrapper();
-        DefaultTransferWindow transferWindow = new DefaultTransferWindow("06:00:00", "22:00:00");
+        DefaultTransferWindow transferWindow = new DefaultTransferWindow("00:00:00", "23:59:59");
         transferService = new DefaultTransferService(accountRepository, feePolicy, localTimeWrapper, transferWindow);
 
         assertThat(accountRepository.findById(A123_ID).getBalance(), equalTo(A123_INITIAL_BAL));
@@ -153,7 +153,7 @@ public class DefaultTransferServiceTests {
         double flatFee = 5.00;
         double transferAmount = 10.00;
         LocalTimeWrapper localTimeWrapper = new LocalTimeWrapper();
-        DefaultTransferWindow transferWindow = new DefaultTransferWindow("06:00:00", "22:00:00");
+        DefaultTransferWindow transferWindow = new DefaultTransferWindow("00:00:00", "23:59:59");
         transferService = new DefaultTransferService(accountRepository, new FlatFeePolicy(flatFee), localTimeWrapper, transferWindow);
         transferService.transfer(transferAmount, A123_ID, C456_ID, "Test Remark");
         assertThat(accountRepository.findById(A123_ID).getBalance(), equalTo(A123_INITIAL_BAL - transferAmount - flatFee));

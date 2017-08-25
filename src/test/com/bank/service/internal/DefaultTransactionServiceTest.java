@@ -14,7 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.sql.Date;
+import java.util.Date;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.time.LocalDateTime;
@@ -66,7 +66,7 @@ public class DefaultTransactionServiceTest {
         toName = "Tom Smith";
         toBalance = 1000.00;
 
-        receipt = new TransferReceipt(LocalTime.now());
+        receipt = new TransferReceipt(new Date());
         srcAccount = new Account(fromAccountId, fromAccountNumber, fromName, fromBalance);
         destAccount = new Account(toAccountId, toAccountNumber, toName, toBalance);
         receipt.setFinalSourceAccount(srcAccount);

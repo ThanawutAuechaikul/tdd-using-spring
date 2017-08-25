@@ -16,6 +16,25 @@ public class VerifyTransfer {
     private Account fromAccount;
     private double balance;
 
+    public String getTransactionTime() {
+        return transactionTime;
+    }
+
+    public void setTransactionTime(String transactionTime) {
+        this.transactionTime = transactionTime;
+    }
+
+    private String transactionTime;
+    private String eventId;
+
+    public String getEventId() {
+        return eventId;
+    }
+
+    public void setEventId(String eventId) {
+        this.eventId = eventId;
+    }
+
     public String getFromRemark() {
         return fromRemark;
     }

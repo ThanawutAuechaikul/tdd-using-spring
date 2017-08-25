@@ -25,6 +25,7 @@ import com.bank.service.FeePolicy;
 import com.bank.service.TransferService;
 
 import java.time.LocalTime;
+import java.util.Date;
 
 public class DefaultTransferService implements TransferService {
 
@@ -84,7 +85,7 @@ public class DefaultTransferService implements TransferService {
     }
 
     private TransferReceipt getTransferReceipt(double amount, LocalTime transactionTime, Account srcAcct, Account dstAcct, double fee) {
-        TransferReceipt receipt = new TransferReceipt(transactionTime);
+        TransferReceipt receipt = new TransferReceipt(new Date());
         receipt.setInitialSourceAccount(srcAcct);
         receipt.setInitialDestinationAccount(dstAcct);
         receipt.setTransferAmount(amount);

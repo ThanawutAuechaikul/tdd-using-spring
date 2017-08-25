@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
 import java.time.LocalTime;
+import java.util.Date;
 
 @Service
 public class TransferServiceImpl implements TransferService {
@@ -35,7 +36,7 @@ public class TransferServiceImpl implements TransferService {
         desAccount = getAccount(destAcctNo);
         checkSourceBalanceEnough(amount, srcAccount);
 
-        transferReceipt = new TransferReceipt(LocalTime.now());
+        transferReceipt = new TransferReceipt(new Date());
         transferReceipt.setFeeAmount(0.00);
         transferReceipt.setTransferAmount(amount);
         transferReceipt.setInitialSourceAccount(srcAccount);
@@ -84,7 +85,7 @@ public class TransferServiceImpl implements TransferService {
 
         checkSourceBalanceEnough(amount, srcAccount);
 
-        transferReceipt = new TransferReceipt(LocalTime.now());
+        transferReceipt = new TransferReceipt(new Date());
         transferReceipt.setFeeAmount(0.00);
         transferReceipt.setTransferAmount(amount);
         transferReceipt.setInitialSourceAccount(srcAccount);

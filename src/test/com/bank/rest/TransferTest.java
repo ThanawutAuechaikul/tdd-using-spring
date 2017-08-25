@@ -17,6 +17,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.time.LocalTime;
+import java.util.Date;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.Matchers.eq;
@@ -58,7 +59,7 @@ public class TransferTest {
         Account Account_1 = new Account("1", "1234567891", "Clark Cent", 20.00);
         Account Account_2 = new Account("2", "4567891231", "Jane Cent", 20.00);
 
-        TransferReceipt receipt = new TransferReceipt(LocalTime.now());
+        TransferReceipt receipt = new TransferReceipt(new Date());
         receipt.setTransferAmount(TRANSFER_AMOUNT);
         receipt.setFinalSourceAccount(Account_1);
         receipt.setFinalDestinationAccount(Account_2);
